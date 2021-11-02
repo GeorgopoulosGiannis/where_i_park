@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:where_i_park/features/bonded_devices/presentation/bonded_devices_screen.dart';
 
-const sharedPrefsKey = 'SHARED_PREFS_KEY';
+const savedCarsKey = 'SAVED_CARS_KEY';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -25,7 +25,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> _readSavedCars() async {
     final sharedPrefs = await SharedPreferences.getInstance();
-    final encodedCars = sharedPrefs.getString(sharedPrefsKey);
+    final encodedCars = sharedPrefs.getString(savedCarsKey);
     if (encodedCars != null) {
       cars = json.decode(encodedCars);
       setState(() {});
@@ -34,22 +34,22 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> _addToSavedCars(MapEntry<String, dynamic> entry) async {
     final sharedPrefs = await SharedPreferences.getInstance();
-    final encodedCars = sharedPrefs.getString(sharedPrefsKey);
+    final encodedCars = sharedPrefs.getString(savedCarsKey);
     final Map<String, dynamic> carsMap =
         encodedCars != null ? json.decode(encodedCars) : <String, dynamic>{};
     carsMap[entry.key] = entry.value;
-    sharedPrefs.setString(sharedPrefsKey, json.encode(carsMap));
+    sharedPrefs.setString(savedCarsKey, json.encode(carsMap));
     cars = carsMap;
     setState(() {});
   }
 
   Future<void> _removeFromSavedCars(String key) async {
     final sharedPrefs = await SharedPreferences.getInstance();
-    final encodedCars = sharedPrefs.getString(sharedPrefsKey);
+    final encodedCars = sharedPrefs.getString(savedCarsKey);
     final Map<String, dynamic> carsMap =
         encodedCars != null ? json.decode(encodedCars) : <String, dynamic>{};
     carsMap.remove(key);
-    sharedPrefs.setString(sharedPrefsKey, json.encode(carsMap));
+    sharedPrefs.setString(savedCarsKey, json.encode(carsMap));
     cars = carsMap;
     setState(() {});
   }
@@ -64,7 +64,6 @@ class _HomeScreenState extends State<HomeScreen> {
             IconButton(
               onPressed: () {
                 _removeFromSavedCars(cars.keys.elementAt(selectedIndex));
-                
               },
               icon: const Icon(Icons.delete),
             ),
@@ -104,6 +103,12 @@ class _HomeScreenState extends State<HomeScreen> {
                 return ListTile(
                   title: Text(title),
                   subtitle: Text(item.key),
+                  trailing: item.value['CONNECTED'] != null
+                      ? const CircleAvatar(
+                        radius: 5,
+                          backgroundColor: Colors.green,
+                        )
+                      : null,
                   tileColor: _getTileColor(index),
                   onTap: () {
                     if (selectedIndex == index) {
