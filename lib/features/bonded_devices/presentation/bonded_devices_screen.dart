@@ -1,29 +1,10 @@
-import 'package:bluetooth_events/bluetooth_events.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-class BondedDevicesScreen extends StatefulWidget {
+import 'bloc/bonded_devices_bloc.dart';
+
+class BondedDevicesScreen extends StatelessWidget {
   const BondedDevicesScreen({Key? key}) : super(key: key);
-
-  @override
-  State<BondedDevicesScreen> createState() => _BondedDevicesScreenState();
-}
-
-class _BondedDevicesScreenState extends State<BondedDevicesScreen> {
-  Map<String, dynamic> bondedDevices = {};
-  Map<String, dynamic> monitoringCars = {};
-
-  @override
-  void initState() {
-    BluetoothEvents.getBondedDevices().then((value) {
-      bondedDevices = value;
-      setState(() {});
-    });
-    super.initState();
-  }
-
-  bool _isAlreadyMonitoring(MapEntry<String, dynamic> item) {
-    return monitoringCars.containsKey(item.key);
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,31 +14,38 @@ class _BondedDevicesScreenState extends State<BondedDevicesScreen> {
           title: const Text('Paired Devices'),
         ),
         body: Center(
-          child: ListView.builder(
-            itemCount: bondedDevices.length,
-            itemBuilder: (context, index) {
-              final item = bondedDevices.entries.elementAt(index);
-              final title = item.value['name'] != item.value['alias']
-                  ? '${item.value['name']} ( ${item.value['alias']} )'
-                  : item.value['name'];
-              return ListTile(
-                title: Text(title),
-                subtitle: Text(item.key),
-                trailing: _isAlreadyMonitoring(item)
-                    ? Container(
-                        height: 10,
-                        width: 10,
-                        decoration: const BoxDecoration(
-                          color: Colors.green,
-                          shape: BoxShape.circle,
-                        ),
-                      )
-                    : null,
-                tileColor: index % 2 != 0 ? Colors.grey[200] : null,
-                onTap: () {
-                  Navigator.pop<MapEntry<String, dynamic>>(
-                      context, bondedDevices.entries.elementAt(index));
-                },
+          child: BlocBuilder<BondedDevicesBloc, BondedDevicesState>(
+            builder: (context, state) {
+              if (state is Error) {
+                return const Center(
+                  child: Text('error'),
+                );
+              }
+              if (state is Loading) {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+              if (state is Loaded) {
+                return ListView.builder(
+                  itemCount: state.pairedDevices.length,
+                  itemBuilder: (context, i) {
+                    final item = state.pairedDevices[i];
+                    return ListTile(
+                      title: Text(item.name),
+                      subtitle: Text(item.address),
+                      tileColor: i % 2 != 0 ? Colors.grey[200] : null,
+                      onTap: () {},
+                    );
+                  },
+                );
+              }
+              return Center(
+                child: Text(
+                  'No paired devices found,\nmake sure you have connected to your car via bluetooth at least once',
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.headline6,
+                ),
               );
             },
           ),
