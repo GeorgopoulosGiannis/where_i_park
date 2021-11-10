@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:where_i_park/features/cars/domain/entities/car.dart';
+import 'package:where_i_park/features/cars/presentation/bloc/cars_bloc.dart'
+    show AddCarsEvent, CarsBloc;
 
 import 'bloc/bonded_devices_bloc.dart';
 
@@ -35,7 +38,19 @@ class BondedDevicesScreen extends StatelessWidget {
                       title: Text(item.name),
                       subtitle: Text(item.address),
                       tileColor: i % 2 != 0 ? Colors.grey[200] : null,
-                      onTap: () {},
+                      onTap: () {
+                        context.read<CarsBloc>().add(
+                              AddCarsEvent([
+                                Car(
+                                  name: item.name,
+                                  address: item.address,
+                                  isConnected: item.isConnected,
+                                  previousLocations: const [],
+                                ),
+                              ]),
+                            );
+                        Navigator.of(context).pop();
+                      },
                     );
                   },
                 );

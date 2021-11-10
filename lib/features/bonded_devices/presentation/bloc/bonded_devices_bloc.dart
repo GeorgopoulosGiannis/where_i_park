@@ -7,7 +7,6 @@ import 'package:meta/meta.dart';
 import 'package:where_i_park/core/domain/usecases/usecase.dart';
 import 'package:where_i_park/features/bonded_devices/domain/entities/bluetooth_device.dart';
 import 'package:where_i_park/features/bonded_devices/domain/usecases/load_bonded_devices.dart';
-import 'package:where_i_park/features/cars/presentation/bloc/cars_bloc.dart';
 
 part 'bonded_devices_event.dart';
 part 'bonded_devices_state.dart';

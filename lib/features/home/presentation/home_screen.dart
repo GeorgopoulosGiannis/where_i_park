@@ -56,18 +56,11 @@ class HomeScreen extends StatelessWidget {
       body: const CarsList(),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () async {
-          final newEntry =
-              await Navigator.of(context).push<MapEntry<String, dynamic>?>(
+          Navigator.of(context).push(
             MaterialPageRoute(
-              builder: (context) =>  BlocProvider(
-                create: (context) => sl<BondedDevicesBloc>(),
-                child:const BondedDevicesScreen(),
-              ),
+              builder: (context) => const BondedDevicesScreen(),
             ),
           );
-          if (newEntry != null) {
-            //_addToSavedCars(newEntry);
-          }
         },
         label: const Text('Add a new car'),
         icon: const Icon(Icons.add),
