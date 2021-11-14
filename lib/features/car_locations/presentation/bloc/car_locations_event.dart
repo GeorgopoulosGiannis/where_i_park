@@ -11,10 +11,20 @@ class LoadCarLocations extends CarLocationsEvent {
   final Car car;
 
   const LoadCarLocations(this.car);
+  @override
+  List<Object> get props => [car];
 }
 
-class ClearAll extends CarLocationsEvent {
-  const ClearAll();
+class SwitchEditState extends CarLocationsEvent {}
+
+class AddToSelected extends CarLocationsEvent {
+  final CarLocation location;
+
+  const AddToSelected(this.location);
+}
+
+class ClearSelected extends CarLocationsEvent {
+  const ClearSelected();
 }
 
 class ViewAsMap extends CarLocationsEvent {}

@@ -18,8 +18,7 @@ import '../features/bonded_devices/domain/usecases/load_bonded_devices.dart'
     as _i26;
 import '../features/bonded_devices/presentation/bloc/bonded_devices_bloc.dart'
     as _i27;
-import '../features/car_locations/domain/usecases/clear_all_locations.dart'
-    as _i11;
+import '../features/car_locations/domain/usecases/clear_locations.dart' as _i11;
 import '../features/car_locations/presentation/bloc/car_locations_bloc.dart'
     as _i23;
 import '../features/cars/data/repositories/car_locations_repository_impl.dart'
@@ -57,8 +56,8 @@ Future<_i1.GetIt> $initGetIt(_i1.GetIt get,
       () => _i8.CarLocationsRepositoryImpl(get<_i6.SharedPreferences>()));
   gh.lazySingleton<_i9.CarRepository>(
       () => _i10.CarRepositoryImpl(get<_i6.SharedPreferences>()));
-  gh.lazySingleton<_i11.ClearAllLocations>(
-      () => _i11.ClearAllLocations(get<_i7.CarLocationsRepository>()));
+  gh.lazySingleton<_i11.ClearLocations>(
+      () => _i11.ClearLocations(get<_i7.CarLocationsRepository>()));
   gh.lazySingleton<_i12.GetConnectedDevice>(
       () => _i12.GetConnectedDevice(get<_i6.SharedPreferences>()));
   gh.lazySingleton<_i13.GetCurrentLocation>(
@@ -80,7 +79,7 @@ Future<_i1.GetIt> $initGetIt(_i1.GetIt get,
       () => _i22.BondedDevicesRepositoryImpl(get<_i20.BluetoothManager>()));
   gh.factoryParam<_i23.CarLocationsBloc, _i24.Car?, dynamic>((car, _) =>
       _i23.CarLocationsBloc(
-          get<_i11.ClearAllLocations>(), get<_i14.GetPositionsForCar>(),
+          get<_i11.ClearLocations>(), get<_i14.GetPositionsForCar>(),
           car: car));
   gh.lazySingleton<_i25.CarsBloc>(() => _i25.CarsBloc(
       get<_i15.GetUserCars>(), get<_i18.SaveCars>(), get<_i17.RemoveCars>()));

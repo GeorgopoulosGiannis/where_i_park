@@ -12,5 +12,8 @@ abstract class CarLocationsRepository {
     CarLocation location,
   );
 
-  Future<Either<Failure, void>> clearCarLocations(Car car);
+  Future<Either<Failure, List<CarLocation>>> clearCarLocations(
+    Car car,
+    List<CarLocation> locationsToRemove,
+  );
 }

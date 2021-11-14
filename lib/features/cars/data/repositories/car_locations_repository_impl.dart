@@ -7,7 +7,7 @@ import 'package:where_i_park/features/car_locations/data/car_location_model.dart
 import 'package:where_i_park/features/car_locations/domain/entities/car_location.dart';
 import 'package:where_i_park/features/cars/domain/entities/car.dart';
 import 'package:where_i_park/core/failures/failure.dart';
-import 'package:geolocator/geolocator.dart';
+
 import 'package:either_dart/either.dart';
 import 'package:where_i_park/features/cars/domain/repositories/car_locations_repository.dart';
 
@@ -17,16 +17,21 @@ class CarLocationsRepositoryImpl extends CarLocationsRepository {
 
   CarLocationsRepositoryImpl(this._prefs);
   @override
-  Future<Either<Failure, void>> clearCarLocations(Car car) async {
+  Future<Either<Failure, List<CarLocation>>> clearCarLocations(
+    Car car,
+    List<CarLocation> locationsToRemove,
+  ) async {
     try {
-      final carLocationsString = _prefs.getString(Constants.carLocations);
-      if (carLocationsString == null) {
-        return const Right(null);
+      final allLocations = _getLocationsFromStorage();
+      final carLocations = allLocations[car.address];
+      if (carLocations == null || carLocations.isEmpty) {
+        return const Right(<CarLocation>[]);
       }
-      final Map<String, dynamic> carLocations = json.decode(carLocationsString);
-      carLocations.remove(car.address);
-      _prefs.setString(Constants.carLocations, json.encode(carLocations));
-      return const Right(null);
+      carLocations
+          .removeWhere((element) => locationsToRemove.contains(element));
+      allLocations[car.address] = carLocations;
+      _prefs.setString(Constants.carLocations, json.encode(allLocations));
+      return Right(carLocations);
     } catch (e) {
       throw UnimplementedError();
     }

@@ -6,10 +6,10 @@ import 'package:equatable/equatable.dart';
 
 import 'package:injectable/injectable.dart';
 import 'package:where_i_park/features/car_locations/domain/entities/car_location.dart';
+import 'package:where_i_park/features/car_locations/domain/usecases/clear_locations.dart';
 
 import 'package:where_i_park/features/cars/domain/entities/car.dart';
 import 'package:where_i_park/features/cars/domain/usecases/get_positions_for_car.dart';
-import 'package:where_i_park/features/car_locations/domain/usecases/clear_all_locations.dart';
 
 part 'car_locations_event.dart';
 part 'car_locations_state.dart';
@@ -17,14 +17,14 @@ part 'car_locations_state.dart';
 @injectable
 class CarLocationsBloc extends Bloc<CarLocationsEvent, CarLocationsState> {
   final Car? car;
-  final ClearAllLocations clearAllLocations;
+  final ClearLocations clearLocations;
   final GetPositionsForCar getPositionsForCar;
   CarLocationsBloc(
-    this.clearAllLocations,
+    this.clearLocations,
     this.getPositionsForCar, {
     @factoryParam this.car,
   })  : assert(car != null),
-        super(Loading()) {
+        super(CarLocationsState.initial(car!)) {
     _registerEvents();
   }
 
@@ -32,18 +32,25 @@ class CarLocationsBloc extends Bloc<CarLocationsEvent, CarLocationsState> {
     on<LoadCarLocations>(_onLoadCarLocations);
     on<ViewAsMap>(_onViewAsMap);
     on<ViewAsList>(_onViewAsList);
-    on<ClearAll>(_onClearAll);
+    on<ClearSelected>(_onClearSelected);
+    on<SwitchEditState>(_onSwitchEditState);
+    on<AddToSelected>(_onAddToSelected);
   }
 
   FutureOr<void> _onLoadCarLocations(
     LoadCarLocations event,
     Emitter<CarLocationsState> emit,
   ) async {
-    emit(Loading());
+    emit(state.copyWith(status: Status.loading));
     final locationsOrFailure = await getPositionsForCar(car!);
     emit(
-      locationsOrFailure.fold((left) => Error(left.message), (right) {
-        return Loaded(
+      locationsOrFailure.fold(
+          (left) => state.copyWith(
+                status: Status.error,
+                message: left.message,
+              ), (right) {
+        return state.copyWith(
+          status: Status.loaded,
           car: car!,
           locations: UnmodifiableListView(
             right,
@@ -53,16 +60,23 @@ class CarLocationsBloc extends Bloc<CarLocationsEvent, CarLocationsState> {
     );
   }
 
-  FutureOr<void> _onClearAll(
-    ClearAll event,
+  FutureOr<void> _onClearSelected(
+    ClearSelected event,
     Emitter<CarLocationsState> emit,
   ) async {
-    emit(Loading());
-    await clearAllLocations(car!);
+    emit(state.copyWith(status: Status.loading));
+    final newLocationsOrFailure = await clearLocations(
+      ClearLocationsParams(state.selected, state.car),
+    );
     emit(
-      Loaded(
+      state.copyWith(
+        status: Status.loaded,
         car: car!,
-        locations: const [],
+        isEdit: false,
+        locations: newLocationsOrFailure.fold(
+          (left) => state.locations,
+          (right) => right,
+        ),
       ),
     );
   }
@@ -71,26 +85,40 @@ class CarLocationsBloc extends Bloc<CarLocationsEvent, CarLocationsState> {
     ViewAsMap event,
     Emitter<CarLocationsState> emit,
   ) {
-    final curState = state as Loaded;
-    emit(
-      Loaded(
-        car: curState.car,
-        locations: curState.locations,
-        viewStyle: ViewStyle.map,
-      ),
-    );
+    emit(state.copyWith(
+      viewStyle: ViewStyle.map,
+    ));
   }
 
   FutureOr<void> _onViewAsList(
     ViewAsList event,
     Emitter<CarLocationsState> emit,
   ) {
-    final curState = state as Loaded;
+    emit(state.copyWith(
+      viewStyle: ViewStyle.list,
+    ));
+  }
+
+  FutureOr<void> _onSwitchEditState(
+    SwitchEditState event,
+    Emitter<CarLocationsState> emit,
+  ) {
     emit(
-      Loaded(
-        car: curState.car,
-        locations: curState.locations,
-        viewStyle: ViewStyle.list,
+      state.copyWith(isEdit: !state.isEdit, selected: []),
+    );
+  }
+
+  FutureOr<void> _onAddToSelected(
+    AddToSelected event,
+    Emitter<CarLocationsState> emit,
+  ) {
+    List<CarLocation> newSelected = state.selected.contains(event.location)
+        ? state.selected.where((element) => event.location != element).toList()
+        : [...state.selected, event.location];
+
+    emit(
+      state.copyWith(
+        selected: newSelected,
       ),
     );
   }

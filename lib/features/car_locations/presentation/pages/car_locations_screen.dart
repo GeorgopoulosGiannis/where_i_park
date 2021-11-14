@@ -18,49 +18,66 @@ class CarLocationsScreen extends StatelessWidget {
     return BlocBuilder<CarLocationsBloc, CarLocationsState>(
       builder: (context, state) {
         return SafeArea(
-          child: Scaffold(
-            appBar: AppBar(
-              title: (state is Loaded) ? Text(state.car.name) : null,
-              actions: [
-                if (state is Loaded)
-                  state.viewStyle == ViewStyle.list
-                      ? const MapViewButton()
-                      : const ListViewButton(),
-                const ClearLocationsButton(),
-              ],
-            ),
-            body: () {
-              if (state is Loading) {
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
-              }
-              if (state is Error) {
-                return Center(
-                  child: Text(state.message),
-                );
-              }
-              if (state is Loaded) {
-                if (state.locations.isEmpty) {
+          child: WillPopScope(
+            onWillPop: () async {
+              return !state.isEdit;
+            },
+            child: Scaffold(
+              appBar: AppBar(
+                title:
+                    state.status == Status.loaded ? Text(state.car.name) : null,
+                backgroundColor: state.isEdit ? Colors.red : null,
+                leading: state.isEdit
+                    ? IconButton(
+                        onPressed: () {
+                          context
+                              .read<CarLocationsBloc>()
+                              .add(SwitchEditState());
+                        },
+                        icon: const Icon(Icons.cancel),
+                      )
+                    : null,
+                actions: [
+                  if (state.status == Status.loaded && !state.isEdit)
+                    state.viewStyle == ViewStyle.list
+                        ? const MapViewButton()
+                        : const ListViewButton(),
+                  if (state.isEdit ) const ClearLocationsButton(),
+                ],
+              ),
+              body: () {
+                if (state.status == Status.loading) {
                   return const Center(
-                    child: Text('No Locations saved for this car yet!'),
+                    child: CircularProgressIndicator(),
                   );
                 }
-                if (state.viewStyle == ViewStyle.map) {
-                  return BlocProvider(
-                    create: (context) => sl<MapBloc>()
-                      ..add(LoadMarkersForCar(
-                        state.car,
-                        state.locations,
-                      )),
-                    child: const LocationsMap(),
+                if (state.status == Status.error) {
+                  return Center(
+                    child: Text(state.message),
                   );
                 }
-                if (state.viewStyle == ViewStyle.list) {
-                  return LocationsList(locations: state.locations);
+                if (state.status == Status.loaded) {
+                  if (state.locations.isEmpty) {
+                    return const Center(
+                      child: Text('No Locations saved for this car yet!'),
+                    );
+                  }
+                  if (state.viewStyle == ViewStyle.map) {
+                    return BlocProvider(
+                      create: (context) => sl<MapBloc>()
+                        ..add(LoadMarkersForCar(
+                          state.car,
+                          state.locations,
+                        )),
+                      child: const LocationsMap(),
+                    );
+                  }
+                  if (state.viewStyle == ViewStyle.list) {
+                    return LocationsList(locations: state.locations);
+                  }
                 }
-              }
-            }(),
+              }(),
+            ),
           ),
         );
       },
