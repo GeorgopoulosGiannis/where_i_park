@@ -6,7 +6,6 @@ class NotificationManager {
   static final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
 
-  
   static Future<void> initialize() async {
     const AndroidInitializationSettings initializationSettingsAndroid =
         AndroidInitializationSettings('ic_launcher');
@@ -20,7 +19,12 @@ class NotificationManager {
     );
   }
 
-  Future<void> showNotification() async {
+  Future<void> showNotification({
+    required int id,
+    String? title,
+    String? body,
+    String? payload,
+  }) async {
     const AndroidNotificationDetails androidPlatformChannelSpecifics =
         AndroidNotificationDetails(
       'your channel id',
@@ -34,11 +38,11 @@ class NotificationManager {
       android: androidPlatformChannelSpecifics,
     );
     await flutterLocalNotificationsPlugin.show(
-      123,
-      'plain title',
-      'plain body',
+      id,
+      title,
+      body,
       platformChannelSpecifics,
-      payload: 'item x',
+      payload: payload,
     );
   }
 }

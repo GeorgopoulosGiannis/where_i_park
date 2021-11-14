@@ -11,6 +11,7 @@ import '../features/cars/domain/repositories/car_repository.dart';
 
 import 'injector.dart';
 import 'location_manager.dart';
+import 'notification_manager.dart';
 
 @singleton
 class BluetoothManager {
@@ -22,10 +23,11 @@ class BluetoothManager {
       } else if (call.method ==
           'android.bluetooth.device.action.ACL_DISCONNECTED') {
         appBloc.add(DeviceDisconnected());
+        return {
+          "body": "location saved!",
+          "title": call.arguments["DEVICE_NAME"]
+        };
       }
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.reload();
-      return "success";
     });
   }
   static const bluetoothNotifierChannel = MethodChannel('BLUETOOTH_NOTIFIER');
@@ -40,7 +42,7 @@ class BluetoothManager {
     if (action == 'android.bluetooth.device.action.ACL_CONNECTED') {
       _handleDeviceConnected(evt['DEVICE_ADDRESS']);
     } else if (action == 'android.bluetooth.device.action.ACL_DISCONNECTED') {
-      _handleDeviceDisconnected(evt['DEVICE_ADDRESS']);
+      await _handleDeviceDisconnected(evt['DEVICE_ADDRESS']);
     }
   }
 
@@ -79,6 +81,13 @@ class BluetoothManager {
         position: position,
         placemark: placemark.first,
       ),
+    );
+    final notificationManager = sl<NotificationManager>();
+    await NotificationManager.initialize();
+    notificationManager.showNotification(
+      id: 123,
+      title: 'Car Location added!',
+      body: savedCar.name,
     );
   }
 }
