@@ -54,11 +54,11 @@ class CarRepositoryImpl extends CarRepository {
   }
 
   @override
-  Future<Either<Failure, void>> removeCars(List<Car> cars) async {
+  Future<Either<Failure, List<Car>>> removeCars(List<Car> cars) async {
     try {
       final encoded = _prefs.getString(Constants.savedCarsKey);
-      List<Car> oldCars = _getListOfCars(encoded);
-      oldCars.removeWhere((oldCar) {
+      List<Car> savedCars = _getListOfCars(encoded);
+      savedCars.removeWhere((oldCar) {
         for (var carToRemove in cars) {
           if (oldCar.address == carToRemove.address) {
             return true;
@@ -67,8 +67,8 @@ class CarRepositoryImpl extends CarRepository {
         return false;
       });
 
-      await _prefs.setString(Constants.savedCarsKey, json.encode(oldCars));
-      return const Right(null);
+      await _prefs.setString(Constants.savedCarsKey, json.encode(savedCars));
+      return  Right(savedCars);
     } catch (e) {
       return Left(
         StorageFailure(),

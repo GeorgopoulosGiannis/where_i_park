@@ -33,6 +33,9 @@ class CarsList extends StatelessWidget {
                 itemCount: state.cars.length,
                 itemBuilder: (context, i) {
                   return ListTile(
+                    tileColor: state.selected.contains(state.cars[i])
+                        ? Theme.of(context).highlightColor
+                        : null,
                     title: Row(children: [
                       Text(state.cars[i].name),
                       const SizedBox(width: 15),
@@ -43,36 +46,37 @@ class CarsList extends StatelessWidget {
                         )
                     ]),
                     subtitle: Text(state.cars[i].address),
-                    trailing: IconButton(
-                      onPressed: () {},
-                      icon: const Icon(
-                        Icons.chevron_right,
-                      ),
-                    ),
-                    tileColor: i % 2 != 0 ? Colors.grey[200] : null,
-                    onTap: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => BlocProvider(
-                            create: (context) => sl<CarLocationsBloc>(
-                              param1: state.cars[i],
-                            )..add(LoadCarLocations(state.cars[i])),
-                            child: const CarLocationsScreen(),
+                    trailing: state.isEdit
+                        ? null
+                        : const Icon(
+                            Icons.chevron_right,
                           ),
-                          //  BlocProvider<MapBloc>(
-                          //   create: (context) => sl<MapBloc>()
-                          //     ..add(
-                          //       LoadMarkersForCar(
-                          //         state.cars[i],
-                          //       ),
-                          //     ),
-                          //   child: MapScreen(
-                          //     car: state.cars[i],
-                          //   ),
-                          // ),
-                        ),
-                      );
-                    },
+                    onTap: state.isEdit
+                        ? () {
+                            context
+                                .read<CarsBloc>()
+                                .add(SelectCar(state.cars[i]));
+                          }
+                        : () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => BlocProvider(
+                                  create: (context) => sl<CarLocationsBloc>(
+                                    param1: state.cars[i],
+                                  )..add(LoadCarLocations(state.cars[i])),
+                                  child: const CarLocationsScreen(),
+                                ),
+                              ),
+                            );
+                          },
+                    onLongPress: state.isEdit
+                        ? null
+                        : () {
+                            context.read<CarsBloc>().add(SwitchEditState());
+                            context
+                                .read<CarsBloc>()
+                                .add(SelectCar(state.cars[i]));
+                          },
                   );
                 },
               );

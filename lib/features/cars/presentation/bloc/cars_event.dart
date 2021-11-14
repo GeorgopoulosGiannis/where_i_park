@@ -10,3 +10,13 @@ class AddCarsEvent extends CarsEvent {
 
   AddCarsEvent(this.cars);
 }
+
+class RemoveSelectedEvent extends CarsEvent {}
+
+class SwitchEditState extends CarsEvent {}
+
+class SelectCar extends CarsEvent {
+  final Car car;
+
+  SelectCar(this.car);
+}

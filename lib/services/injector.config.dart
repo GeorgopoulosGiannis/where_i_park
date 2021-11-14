@@ -9,37 +9,38 @@ import 'package:injectable/injectable.dart' as _i2;
 import 'package:shared_preferences/shared_preferences.dart' as _i6;
 
 import '../core/domain/usecases/get_connected_device.dart' as _i12;
-import '../core/presentation/bloc/app_bloc.dart' as _i18;
+import '../core/presentation/bloc/app_bloc.dart' as _i19;
 import '../features/bonded_devices/data/repositories/bonded_devices_repository_impl.dart'
-    as _i21;
+    as _i22;
 import '../features/bonded_devices/domain/repository/bonded_devices_repository.dart'
-    as _i20;
+    as _i21;
 import '../features/bonded_devices/domain/usecases/load_bonded_devices.dart'
-    as _i25;
-import '../features/bonded_devices/presentation/bloc/bonded_devices_bloc.dart'
     as _i26;
+import '../features/bonded_devices/presentation/bloc/bonded_devices_bloc.dart'
+    as _i27;
 import '../features/car_locations/domain/usecases/clear_all_locations.dart'
     as _i11;
 import '../features/car_locations/presentation/bloc/car_locations_bloc.dart'
-    as _i22;
+    as _i23;
 import '../features/cars/data/repositories/car_locations_repository_impl.dart'
     as _i8;
 import '../features/cars/data/repositories/car_repository_impl.dart' as _i10;
-import '../features/cars/domain/entities/car.dart' as _i23;
+import '../features/cars/domain/entities/car.dart' as _i24;
 import '../features/cars/domain/repositories/car_locations_repository.dart'
     as _i7;
 import '../features/cars/domain/repositories/car_repository.dart' as _i9;
 import '../features/cars/domain/usecases/get_positions_for_car.dart' as _i14;
 import '../features/cars/domain/usecases/get_user_cars.dart' as _i15;
-import '../features/cars/domain/usecases/save_cars.dart' as _i17;
-import '../features/cars/presentation/bloc/cars_bloc.dart' as _i24;
+import '../features/cars/domain/usecases/remove_car.dart' as _i17;
+import '../features/cars/domain/usecases/save_cars.dart' as _i18;
+import '../features/cars/presentation/bloc/cars_bloc.dart' as _i25;
 import '../features/home/presentation/bloc/home_bloc.dart' as _i3;
 import '../features/map/domain/usecases/get_current_location.dart' as _i13;
 import '../features/map/presentation/bloc/map_bloc.dart' as _i16;
-import 'bluetooth_manager.dart' as _i19;
+import 'bluetooth_manager.dart' as _i20;
 import 'location_manager.dart' as _i4;
 import 'notification_manager.dart' as _i5;
-import 'register_module.dart' as _i27; // ignore_for_file: unnecessary_lambdas
+import 'register_module.dart' as _i28; // ignore_for_file: unnecessary_lambdas
 
 // ignore_for_file: lines_longer_than_80_chars
 /// initializes the registration of provided dependencies inside of [GetIt]
@@ -68,24 +69,26 @@ Future<_i1.GetIt> $initGetIt(_i1.GetIt get,
       () => _i15.GetUserCars(get<_i9.CarRepository>()));
   gh.factory<_i16.MapBloc>(() => _i16.MapBloc(
       get<_i13.GetCurrentLocation>(), get<_i14.GetPositionsForCar>()));
-  gh.lazySingleton<_i17.SaveCars>(
-      () => _i17.SaveCars(get<_i9.CarRepository>()));
-  gh.singleton<_i18.AppBloc>(_i18.AppBloc(get<_i12.GetConnectedDevice>()));
-  gh.singleton<_i19.BluetoothManager>(
-      _i19.BluetoothManager(get<_i18.AppBloc>()));
-  gh.lazySingleton<_i20.BondedDevicesRepository>(
-      () => _i21.BondedDevicesRepositoryImpl(get<_i19.BluetoothManager>()));
-  gh.factoryParam<_i22.CarLocationsBloc, _i23.Car?, dynamic>((car, _) =>
-      _i22.CarLocationsBloc(
+  gh.lazySingleton<_i17.RemoveCars>(
+      () => _i17.RemoveCars(get<_i9.CarRepository>()));
+  gh.lazySingleton<_i18.SaveCars>(
+      () => _i18.SaveCars(get<_i9.CarRepository>()));
+  gh.singleton<_i19.AppBloc>(_i19.AppBloc(get<_i12.GetConnectedDevice>()));
+  gh.singleton<_i20.BluetoothManager>(
+      _i20.BluetoothManager(get<_i19.AppBloc>()));
+  gh.lazySingleton<_i21.BondedDevicesRepository>(
+      () => _i22.BondedDevicesRepositoryImpl(get<_i20.BluetoothManager>()));
+  gh.factoryParam<_i23.CarLocationsBloc, _i24.Car?, dynamic>((car, _) =>
+      _i23.CarLocationsBloc(
           get<_i11.ClearAllLocations>(), get<_i14.GetPositionsForCar>(),
           car: car));
-  gh.lazySingleton<_i24.CarsBloc>(
-      () => _i24.CarsBloc(get<_i15.GetUserCars>(), get<_i17.SaveCars>()));
-  gh.lazySingleton<_i25.LoadBondedDevices>(
-      () => _i25.LoadBondedDevices(get<_i20.BondedDevicesRepository>()));
-  gh.factory<_i26.BondedDevicesBloc>(
-      () => _i26.BondedDevicesBloc(get<_i25.LoadBondedDevices>()));
+  gh.lazySingleton<_i25.CarsBloc>(() => _i25.CarsBloc(
+      get<_i15.GetUserCars>(), get<_i18.SaveCars>(), get<_i17.RemoveCars>()));
+  gh.lazySingleton<_i26.LoadBondedDevices>(
+      () => _i26.LoadBondedDevices(get<_i21.BondedDevicesRepository>()));
+  gh.factory<_i27.BondedDevicesBloc>(
+      () => _i27.BondedDevicesBloc(get<_i26.LoadBondedDevices>()));
   return get;
 }
 
-class _$RegisterModule extends _i27.RegisterModule {}
+class _$RegisterModule extends _i28.RegisterModule {}

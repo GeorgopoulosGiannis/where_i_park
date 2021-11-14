@@ -31,14 +31,15 @@ class BondedDevicesScreen extends StatelessWidget {
                 );
               }
               if (state is Loaded) {
-                return ListView.builder(
+                return ListView.separated(
+                  separatorBuilder: (context, i) => const Divider(),
                   itemCount: state.pairedDevices.length,
                   itemBuilder: (context, i) {
                     final item = state.pairedDevices[i];
                     return ListTile(
                       title: Text(item.name),
                       subtitle: Text(item.address),
-                      tileColor: i % 2 != 0 ? Colors.grey[200] : null,
+                      
                       trailing: item.address ==
                               context.watch<AppBloc>().state.connectedDevice
                           ? const CircleAvatar(

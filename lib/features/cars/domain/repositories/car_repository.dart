@@ -10,5 +10,5 @@ abstract class CarRepository {
 
   Car? findInSaved(String address);
 
-  
+  Future<Either<Failure, List<Car>>> removeCars(List<Car> cars);
 }

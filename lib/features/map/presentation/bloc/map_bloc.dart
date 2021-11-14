@@ -7,7 +7,9 @@ import 'package:geolocator/geolocator.dart';
 
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:injectable/injectable.dart';
+import 'package:intl/intl.dart';
 import 'package:where_i_park/core/domain/usecases/usecase.dart';
+import 'package:where_i_park/features/car_locations/domain/entities/car_location.dart';
 import 'package:where_i_park/features/cars/domain/entities/car.dart';
 import 'package:where_i_park/features/cars/domain/usecases/get_positions_for_car.dart';
 import 'package:where_i_park/features/map/domain/usecases/get_current_location.dart';
@@ -37,7 +39,10 @@ class MapBloc extends Bloc<MapEvent, MapState> {
   ) async {
     emit(Loading());
 
-    final markers = createMarkers(event.car, event.locations);
+    final markers = createMarkers(
+      event.car,
+      event.locations,
+    );
     CameraPosition cameraPosition;
 
     if (event.locations.isEmpty) {
@@ -53,7 +58,9 @@ class MapBloc extends Bloc<MapEvent, MapState> {
         ),
       );
     } else {
-      cameraPosition = getLastPosition(event.locations);
+      cameraPosition = getLastPosition(
+        event.locations.map((e) => e.position).toList(),
+      );
     }
     emit(Loaded(
       car: event.car,
@@ -83,20 +90,22 @@ class MapBloc extends Bloc<MapEvent, MapState> {
   @visibleForTesting
   Map<MarkerId, Marker> createMarkers(
     Car car,
-    List<Position> previousLocs,
+    List<CarLocation> previousLocs,
   ) {
     final markers = <MarkerId, Marker>{};
 
-    for (var position in previousLocs) {
+    for (var loc in previousLocs) {
       var i = 0;
 
       final markerId = MarkerId('${car.address}-$i');
       final marker = Marker(
         markerId: markerId,
-        position: LatLng(position.latitude, position.longitude),
+        position: LatLng(loc.position.latitude, loc.position.longitude),
         infoWindow: InfoWindow(
           title: car.name,
-          snippet: position.timestamp?.toLocal().toString(),
+          snippet: loc.position.timestamp != null
+              ? DateFormat('dd-MM-yyyy - kk:mm').format(loc.position.timestamp!)
+              : '-',
         ),
         onTap: () {
           add(MarkerTappedEvent(markerId));

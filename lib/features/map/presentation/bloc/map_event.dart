@@ -9,7 +9,7 @@ abstract class MapEvent extends Equatable {
 
 class LoadMarkersForCar extends MapEvent {
   final Car car;
-  final List<Position> locations;
+  final List<CarLocation> locations;
 
   const LoadMarkersForCar(
     this.car,

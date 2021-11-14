@@ -1,4 +1,4 @@
-import 'package:geolocator/geolocator.dart';
+
 
 import 'package:where_i_park/features/bonded_devices/domain/entities/bluetooth_device.dart';
 

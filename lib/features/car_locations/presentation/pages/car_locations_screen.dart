@@ -20,6 +20,7 @@ class CarLocationsScreen extends StatelessWidget {
         return SafeArea(
           child: Scaffold(
             appBar: AppBar(
+              title: (state is Loaded) ? Text(state.car.name) : null,
               actions: [
                 if (state is Loaded)
                   state.viewStyle == ViewStyle.list
@@ -40,12 +41,17 @@ class CarLocationsScreen extends StatelessWidget {
                 );
               }
               if (state is Loaded) {
+                if (state.locations.isEmpty) {
+                  return const Center(
+                    child: Text('No Locations saved for this car yet!'),
+                  );
+                }
                 if (state.viewStyle == ViewStyle.map) {
                   return BlocProvider(
                     create: (context) => sl<MapBloc>()
                       ..add(LoadMarkersForCar(
                         state.car,
-                        state.locations.map((e) => e.position).toList(),
+                        state.locations,
                       )),
                     child: const LocationsMap(),
                   );
