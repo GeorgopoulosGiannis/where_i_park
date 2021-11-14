@@ -1,21 +1,17 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'bluetooth_device.dart';
+part of 'car_model.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-BluetoothDevice _$BluetoothDeviceFromJson(Map<String, dynamic> json) =>
-    BluetoothDevice(
+CarModel _$CarModelFromJson(Map<String, dynamic> json) => CarModel(
       name: json['name'] as String,
       address: json['address'] as String,
-      isConnected: json['isConnected'] as bool,
     );
 
-Map<String, dynamic> _$BluetoothDeviceToJson(BluetoothDevice instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$CarModelToJson(CarModel instance) => <String, dynamic>{
       'name': instance.name,
       'address': instance.address,
-      'isConnected': instance.isConnected,
     };

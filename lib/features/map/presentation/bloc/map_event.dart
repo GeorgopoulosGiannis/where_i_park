@@ -7,8 +7,18 @@ abstract class MapEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class ClearAll extends MapEvent {
+class LoadMarkersForCar extends MapEvent {
   final Car car;
+  final List<Position> locations;
 
-  const ClearAll(this.car);
+  const LoadMarkersForCar(
+    this.car,
+    this.locations,
+  );
+}
+
+class MarkerTappedEvent extends MapEvent {
+  final MarkerId markerId;
+
+  const MarkerTappedEvent(this.markerId);
 }

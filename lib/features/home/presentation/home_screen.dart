@@ -1,43 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:where_i_park/features/bonded_devices/presentation/bloc/bonded_devices_bloc.dart';
+
 import 'package:where_i_park/features/bonded_devices/presentation/bonded_devices_screen.dart';
 import 'package:where_i_park/features/cars/presentation/widgets/cars_list.dart';
-import 'package:where_i_park/features/cars/presentation/widgets/cars_title.dart';
-import 'package:where_i_park/services/injector.dart';
+
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);
-
-  // Future<void> _readSavedCars() async {
-  //   final encodedCars = sharedPrefs.getString(savedCarsKey);
-  //   if (encodedCars != null) {
-  //     cars = json.decode(encodedCars);
-  //     setState(() {});
-  //   }
-  // }
-
-  // Future<void> _addToSavedCars(MapEntry<String, dynamic> entry) async {
-  //   final sharedPrefs = await SharedPreferences.getInstance();
-  //   final encodedCars = sharedPrefs.getString(savedCarsKey);
-  //   final Map<String, dynamic> carsMap =
-  //       encodedCars != null ? json.decode(encodedCars) : <String, dynamic>{};
-  //   carsMap[entry.key] = entry.value;
-  //   sharedPrefs.setString(savedCarsKey, json.encode(carsMap));
-  //   cars = carsMap;
-  //   setState(() {});
-  // }
-
-  // Future<void> _removeFromSavedCars(String key) async {
-  //   final sharedPrefs = await SharedPreferences.getInstance();
-  //   final encodedCars = sharedPrefs.getString(savedCarsKey);
-  //   final Map<String, dynamic> carsMap =
-  //       encodedCars != null ? json.decode(encodedCars) : <String, dynamic>{};
-  //   carsMap.remove(key);
-  //   sharedPrefs.setString(savedCarsKey, json.encode(carsMap));
-  //   cars = carsMap;
-  //   setState(() {});
-  // }
 
   @override
   Widget build(BuildContext context) {

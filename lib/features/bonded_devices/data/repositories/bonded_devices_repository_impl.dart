@@ -20,7 +20,6 @@ class BondedDevicesRepositoryImpl extends BondedDevicesRepository {
           BluetoothDevice(
             address: entry.key,
             name: entry.value['name'],
-            isConnected: false,
           ),
         );
       }
