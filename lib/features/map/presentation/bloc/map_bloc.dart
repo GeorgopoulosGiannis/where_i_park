@@ -9,6 +9,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:injectable/injectable.dart';
 import 'package:intl/intl.dart';
 import 'package:where_i_park/core/domain/usecases/usecase.dart';
+import 'package:where_i_park/core/helpers/helpers.dart';
 import 'package:where_i_park/features/car_locations/domain/entities/car_location.dart';
 import 'package:where_i_park/features/cars/domain/entities/car.dart';
 import 'package:where_i_park/features/cars/domain/usecases/get_positions_for_car.dart';
@@ -25,19 +26,20 @@ class MapBloc extends Bloc<MapEvent, MapState> {
   MapBloc(
     this.getCurrentLocation,
     this.getPositionsForCar,
-  ) : super(Loading()) {
+  ) : super(const MapState.initial()) {
     _registerEvents();
   }
   void _registerEvents() {
     on<LoadMarkersForCar>(_onLoadMarkersForCar);
     on<MarkerTappedEvent>(_onMarkerTappedEvent);
+    on<SelectLocationEvt>(_onSelectLocationEvt);
   }
 
   FutureOr<void> _onLoadMarkersForCar(
     LoadMarkersForCar event,
     Emitter<MapState> emit,
   ) async {
-    emit(Loading());
+    emit(state.copyWith(status: Status.loading));
 
     final markers = createMarkers(
       event.car,
@@ -62,10 +64,12 @@ class MapBloc extends Bloc<MapEvent, MapState> {
         event.locations.map((e) => e.position).toList(),
       );
     }
-    emit(Loaded(
+    emit(state.copyWith(
+      status: Status.loaded,
       car: event.car,
       markers: markers,
       cameraPosition: cameraPosition,
+      zoomedLocation: event.locations.first,
     ));
   }
 
@@ -88,11 +92,11 @@ class MapBloc extends Bloc<MapEvent, MapState> {
   }
 
   @visibleForTesting
-  Map<MarkerId, Marker> createMarkers(
+  Map<CarLocation, Marker> createMarkers(
     Car car,
     List<CarLocation> previousLocs,
   ) {
-    final markers = <MarkerId, Marker>{};
+    final markers = <CarLocation, Marker>{};
 
     for (var loc in previousLocs) {
       var i = 0;
@@ -104,14 +108,14 @@ class MapBloc extends Bloc<MapEvent, MapState> {
         infoWindow: InfoWindow(
           title: car.name,
           snippet: loc.position.timestamp != null
-              ? DateFormat('dd-MM-yyyy - kk:mm').format(loc.position.timestamp!)
+              ? Helpers.toLocaleDateString(loc.position.timestamp!)
               : '-',
         ),
         onTap: () {
-          add(MarkerTappedEvent(markerId));
+          add(MarkerTappedEvent(loc));
         },
       );
-      markers[markerId] = marker;
+      markers[loc] = marker;
     }
     return markers;
   }
@@ -140,6 +144,22 @@ class MapBloc extends Bloc<MapEvent, MapState> {
     MarkerTappedEvent event,
     Emitter<MapState> emit,
   ) {
-    print(event);
+    emit(
+      state.copyWith(
+        zoomedLocation: event.loc,
+      ),
+    );
+  }
+
+  FutureOr<void> _onSelectLocationEvt(
+    SelectLocationEvt event,
+    Emitter<MapState> emit,
+  ) {
+    emit(
+      state.copyWith(
+        zoomedLocation:
+            state.zoomedLocation == event.location ? null : event.location,
+      ),
+    );
   }
 }

@@ -3,6 +3,7 @@ import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:where_i_park/core/helpers/helpers.dart';
 
 import 'package:where_i_park/features/car_locations/domain/entities/car_location.dart';
 import 'package:where_i_park/features/car_locations/presentation/bloc/car_locations_bloc.dart';
@@ -20,15 +21,14 @@ class LocationsList extends StatelessWidget {
 
   String _subtitleFromPosition(Position position) {
     return position.timestamp != null
-        ? DateFormat('dd-MM-yyyy - kk:mm').format(position.timestamp!)
+        ?Helpers.toLocaleDateString(position.timestamp!)
         : '-';
   }
 
   @override
   Widget build(BuildContext context) {
     return ListView.separated(
-      reverse: true,
-      shrinkWrap: true,
+    
       itemCount: locations.length,
       separatorBuilder: (context, index) => const Divider(),
       itemBuilder: (context, i) => ListTile(

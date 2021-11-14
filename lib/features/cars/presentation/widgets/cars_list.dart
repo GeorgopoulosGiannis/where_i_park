@@ -4,7 +4,6 @@ import 'package:where_i_park/core/presentation/bloc/app_bloc.dart';
 import 'package:where_i_park/features/car_locations/presentation/bloc/car_locations_bloc.dart'
     show CarLocationsBloc, LoadCarLocations;
 import 'package:where_i_park/features/car_locations/presentation/pages/car_locations_screen.dart';
-import 'package:where_i_park/features/map/presentation/bloc/map_bloc.dart';
 
 import 'package:where_i_park/services/injector.dart';
 

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:where_i_park/features/car_locations/presentation/bloc/car_locations_bloc.dart';
 import 'package:where_i_park/features/car_locations/presentation/widgets/clear_locations_button.dart';
@@ -7,6 +8,7 @@ import 'package:where_i_park/features/car_locations/presentation/widgets/locatio
 import 'package:where_i_park/features/car_locations/presentation/widgets/map_view_button.dart';
 import 'package:where_i_park/features/map/presentation/bloc/map_bloc.dart'
     show LoadMarkersForCar, MapBloc;
+import 'package:where_i_park/features/map/presentation/widgets/location_card.dart';
 import 'package:where_i_park/features/map/presentation/widgets/locations_map.dart';
 import 'package:where_i_park/services/injector.dart';
 
@@ -42,7 +44,7 @@ class CarLocationsScreen extends StatelessWidget {
                     state.viewStyle == ViewStyle.list
                         ? const MapViewButton()
                         : const ListViewButton(),
-                  if (state.isEdit ) const ClearLocationsButton(),
+                  if (state.isEdit) const ClearLocationsButton(),
                 ],
               ),
               body: () {
@@ -69,11 +71,34 @@ class CarLocationsScreen extends StatelessWidget {
                           state.car,
                           state.locations,
                         )),
-                      child: const LocationsMap(),
+                      child: Column(
+                        children: [
+                          const Flexible(
+                            flex: 3,
+                            child: LocationsMap(),
+                          ),
+                          Flexible(
+                            child: ColoredBox(
+                              color: Colors
+                                  .grey, // Theme.of(context).colorScheme.primary,
+                              child: ListView.builder(
+                                scrollDirection: Axis.horizontal,
+                                itemCount: state.locations.length,
+                                itemBuilder: (context, i) {
+                                  final location = state.locations[i];
+                                  return LocationCard(location: location);
+                                },
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     );
                   }
                   if (state.viewStyle == ViewStyle.list) {
-                    return LocationsList(locations: state.locations);
+                    return LocationsList(
+                      locations: state.locations,
+                    );
                   }
                 }
               }(),

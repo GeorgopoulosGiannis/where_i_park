@@ -45,6 +45,7 @@ class MyApp extends StatelessWidget {
           ),
         ],
         child: MaterialApp(
+          debugShowCheckedModeBanner: false,
           title: 'Where did i park?',
           theme: ThemeData(
             primarySwatch: Colors.blue,

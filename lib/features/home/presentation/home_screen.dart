@@ -13,6 +13,7 @@ class HomeScreen extends StatelessWidget {
     final state = context.watch<CarsBloc>().state;
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         backgroundColor: state.isEdit ? Colors.red : null,
         title: state.isEdit ? null : const Text('Where did i Park?'),
         leading: state.isEdit

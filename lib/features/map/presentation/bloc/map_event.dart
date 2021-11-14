@@ -17,8 +17,14 @@ class LoadMarkersForCar extends MapEvent {
   );
 }
 
-class MarkerTappedEvent extends MapEvent {
-  final MarkerId markerId;
+class SelectLocationEvt extends MapEvent{
+  final CarLocation location;
 
-  const MarkerTappedEvent(this.markerId);
+  const SelectLocationEvt(this.location);
+}
+
+class MarkerTappedEvent extends MapEvent {
+  final CarLocation loc;
+
+  const MarkerTappedEvent(this.loc);
 }

@@ -52,9 +52,9 @@ class CarLocationsBloc extends Bloc<CarLocationsEvent, CarLocationsState> {
         return state.copyWith(
           status: Status.loaded,
           car: car!,
-          locations: UnmodifiableListView(
-            right,
-          ),
+          locations: UnmodifiableListView([
+            ...{...right.reversed},
+          ]),
         );
       }),
     );

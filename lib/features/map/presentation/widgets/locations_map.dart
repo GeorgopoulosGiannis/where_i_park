@@ -29,9 +29,17 @@ class _LocationsMapState extends State<LocationsMap> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<MapBloc, MapState>(
+    return BlocConsumer<MapBloc, MapState>(
+      listenWhen: (previous, current) =>
+          previous.zoomedLocation != current.zoomedLocation,
+      listener: (context, state) async {
+        final mapController = await _controller.future;
+
+        mapController.showMarkerInfoWindow(
+            state.markers[state.zoomedLocation]!.markerId);
+      },
       builder: (context, state) {
-        if (state is Loading) {
+        if (state.status == Status.loading) {
           return const Center(
             child: CircularProgressIndicator(),
           );
@@ -41,18 +49,17 @@ class _LocationsMapState extends State<LocationsMap> {
             child: Text(state.message),
           );
         }
-        if (state is Loaded) {
-          return Center(
-            child: GoogleMap(
-              mapType: MapType.normal,
-              initialCameraPosition: state.cameraPosition,
-              markers: Set<Marker>.of(state.markers.values),
-              onMapCreated: (controller) {
-                if (!_controller.isCompleted) {
-                  _controller.complete(controller);
-                }
-              },
-            ),
+        if (state.status == Status.loaded) {
+          return GoogleMap(
+            mapToolbarEnabled: true,
+            mapType: MapType.normal,
+            initialCameraPosition: state.cameraPosition!,
+            markers: Set<Marker>.of(state.markers.values),
+            onMapCreated: (controller) {
+              if (!_controller.isCompleted) {
+                _controller.complete(controller);
+              }
+            },
           );
         }
         return Container();
