@@ -1,10 +1,12 @@
 import 'dart:async';
 
+import 'package:background_location/background_location.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wakelock/wakelock.dart';
+import 'package:where_i_park/services/location_manager.dart';
 
 import 'core/presentation/bloc/app_bloc.dart';
 import 'services/injector.dart';
@@ -19,10 +21,12 @@ void main() async {
   runZoned(() async {
     WidgetsFlutterBinding.ensureInitialized();
     await Wakelock.enable();
-    await Geolocator.requestPermission();
+
     // final prefs= await SharedPreferences.getInstance();
     // prefs.clear();
+    await BackgroundLocation.startLocationService();
     await configureDependencies();
+    await sl<LocationManager>().getPermissions();
     await BluetoothManager.init();
     runApp(const MyApp());
   });
@@ -51,7 +55,7 @@ class MyApp extends StatelessWidget {
             primarySwatch: Colors.blue,
           ),
           home: const SafeArea(
-            child:  HomeScreen(),
+            child: HomeScreen(),
           ),
         ));
   }
