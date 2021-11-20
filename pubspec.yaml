@@ -42,7 +42,7 @@ dependencies:
   json_annotation: ^4.3.0
   google_maps_flutter: ^2.1.0
   intl: ^0.17.0
-  background_location: ^0.8.1
+  permission_handler: ^8.3.0
   bluetooth_events:
     git:
       url: git://github.com/GeorgopoulosGiannis/bluetooth_events.git

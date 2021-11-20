@@ -1,5 +1,6 @@
 import 'package:geolocator/geolocator.dart';
 import 'package:injectable/injectable.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 @lazySingleton
 class LocationManager {
@@ -13,36 +14,30 @@ class LocationManager {
     );
   }
 
-  Future<void> getPermissions() async {
-    bool serviceEnabled;
-    LocationPermission permission;
+  Future<bool> hasPermissionForAutomatic() async {
+    return await Permission.locationAlways.status != PermissionStatus.granted;
+  }
 
-    // Test if location services are enabled.
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      // Location services are not enabled don't continue
-      // accessing the position and request users of the
-      // App to enable the location services.
-      return Future.error('Location services are disabled.');
+  Future<bool> getPermissionForAutomatic() async {
+    bool hasManual = await hasPermissionForManual();
+    if (!hasManual) {
+      hasManual = await getPermissionForManual();
     }
+    if (!hasManual) {
+      return false;
+    }
+    // cant request always if we dont have atleast when in use
+    final alwaysPermission = await Permission.locationAlways.request();
+    return alwaysPermission.isGranted;
+  }
 
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        // Permissions are denied, next time you could try
-        // requesting permissions again (this is also where
-        // Android's shouldShowRequestPermissionRationale
-        // returned true. According to Android guidelines
-        // your App should show an explanatory UI now.
-        return Future.error('Location permissions are denied');
-      }
-    }
+  Future<bool> hasPermissionForManual() async {
+    return await Permission.locationWhenInUse.status !=
+        PermissionStatus.granted;
+  }
 
-    if (permission == LocationPermission.deniedForever) {
-      // Permissions are denied forever, handle appropriately.
-      return Future.error(
-          'Location permissions are permanently denied, we cannot request permissions.');
-    }
+  Future<bool> getPermissionForManual() async {
+    final whenInUse = await Permission.locationWhenInUse.request();
+    return whenInUse.isGranted;
   }
 }
