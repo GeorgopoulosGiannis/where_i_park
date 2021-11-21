@@ -45,14 +45,7 @@ class _MethodStepBody extends StatelessWidget {
             isDense: true,
             hint: const Text('Select method'),
             onChanged: (TrackMethod? newValue) async {
-              await showDialog(
-                context: context,
-                builder: (context) => const InfoDialog(
-                  body:
-                      'For automatic updates you need to allow background location permissions',
-                  title: 'Location permissions',
-                ),
-              );
+
               context
                   .read<AddCarStepperBloc>()
                   .add(SelectedMethodEvent(newValue!));

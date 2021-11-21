@@ -17,6 +17,7 @@ enum AddCarStepperStatus {
   loading,
   loaded,
   error,
+  saved,
 }
 
 class AddCarStepperState extends Equatable {
@@ -29,7 +30,7 @@ class AddCarStepperState extends Equatable {
       currentStep == 0 && selectedCar != null ||
       currentStep == 1 && trackMethod != null;
   bool get isComplete => selectedCar != null && trackMethod != null;
-  
+
   const AddCarStepperState({
     required this.status,
     required this.currentStep,

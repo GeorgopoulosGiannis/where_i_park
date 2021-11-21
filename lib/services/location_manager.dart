@@ -15,10 +15,15 @@ class LocationManager {
   }
 
   Future<bool> hasPermissionForAutomatic() async {
-    return await Permission.locationAlways.status != PermissionStatus.granted;
+    final perm =
+        await Permission.locationAlways.status != PermissionStatus.granted;
+    return perm;
   }
 
   Future<bool> getPermissionForAutomatic() async {
+    if (await hasPermissionForAutomatic()) {
+      return true;
+    }
     bool hasManual = await hasPermissionForManual();
     if (!hasManual) {
       hasManual = await getPermissionForManual();
@@ -37,6 +42,9 @@ class LocationManager {
   }
 
   Future<bool> getPermissionForManual() async {
+    if (await hasPermissionForManual()) {
+      return true;
+    }
     final whenInUse = await Permission.locationWhenInUse.request();
     return whenInUse.isGranted;
   }

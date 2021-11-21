@@ -51,12 +51,20 @@ class AddCarStepperBloc extends Bloc<AddCarStepperEvent, AddCarStepperState> {
   FutureOr<void> _onSelectedMethodEvent(
     SelectedMethodEvent event,
     Emitter<AddCarStepperState> emit,
-  ) {
-    emit(
-      state.copyWith(
-        trackMethod: event.method,
-      ),
-    );
+  ) async {
+    bool hasPermission = false;
+    if (event.method == TrackMethod.notification) {
+      hasPermission = await locationManager.getPermissionForManual();
+    } else if (event.method == TrackMethod.automatic) {
+      hasPermission = await locationManager.getPermissionForAutomatic();
+    }
+    if (hasPermission) {
+      emit(
+        state.copyWith(
+          trackMethod: event.method,
+        ),
+      );
+    }
   }
 
   FutureOr<void> _onPreviousStepEvent(
@@ -90,13 +98,21 @@ class AddCarStepperBloc extends Bloc<AddCarStepperEvent, AddCarStepperState> {
         status: AddCarStepperStatus.loading,
       ),
     );
-    if (state.trackMethod == TrackMethod.notification) {
-      final canSave = await locationManager.hasPermissionForManual();
-    }
+
     final resultOrFailure = await saveCars(
       [
         state.selectedCar!,
       ],
+    );
+    emit(
+      resultOrFailure.fold(
+        (left) => state.copyWith(
+          status: AddCarStepperStatus.error,
+        ),
+        (right) => state.copyWith(
+          status: AddCarStepperStatus.saved,
+        ),
+      ),
     );
   }
 }

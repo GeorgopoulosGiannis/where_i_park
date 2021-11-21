@@ -49,11 +49,12 @@ class CarsScreen extends StatelessWidget {
               ? null
               : FloatingActionButton.extended(
                   onPressed: () async {
-                    Navigator.of(context).push(
+                    await Navigator.of(context).push(
                       MaterialPageRoute(
                         builder: (context) => const CarStepperScreen(),
                       ),
                     );
+                    context.read<CarsBloc>().add(LoadCarsEvent());
                   },
                   label: const Text('Add a new car'),
                   icon: const Icon(Icons.add),

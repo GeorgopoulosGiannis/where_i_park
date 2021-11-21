@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:where_i_park/core/presentation/widgets/dialogs.dart';
 import 'package:where_i_park/features/bluetooth_tracker/add_car_stepper/presentation/bloc/add_car_stepper_bloc.dart';
 import 'package:where_i_park/features/bluetooth_tracker/add_car_stepper/presentation/widgets/car_step.dart';
 import 'package:where_i_park/features/bluetooth_tracker/add_car_stepper/presentation/widgets/method_step.dart';
@@ -33,7 +34,32 @@ class CarStepperScreen extends StatelessWidget {
     return SafeArea(
       child: BlocProvider<AddCarStepperBloc>(
         create: (context) => sl<AddCarStepperBloc>(),
-        child: BlocBuilder<AddCarStepperBloc, AddCarStepperState>(
+        child: BlocConsumer<AddCarStepperBloc, AddCarStepperState>(
+          listener: (context, state) async{
+            if (state.status == AddCarStepperStatus.error) {
+              showDialog(
+                context: context,
+                builder: (context) {
+                  return const ErrorDialog(
+                    body: '',
+                    title: 'Failed to save car',
+                  );
+                },
+              );
+            }
+            if (state.status == AddCarStepperStatus.saved) {
+              await showDialog(
+                context: context,
+                builder: (context) {
+                  return const SuccessDialog(
+                    body: '',
+                    title: 'Saved Car',
+                  );
+                },
+              );
+              Navigator.of(context).pop();
+            }
+          },
           builder: (context, state) {
             return Scaffold(
               appBar: AppBar(),
@@ -42,10 +68,10 @@ class CarStepperScreen extends StatelessWidget {
                 currentStep: state.currentStep,
                 onStepContinue: state.enabledCurrentStep
                     ? () {
-                        if (state.isComplete) {
-                        context.read<AddCarStepperBloc>().add(SaveCarEvent());  
-                        }
-                        context.read<AddCarStepperBloc>().add(NextStepEvent());
+                        final bloc = context.read<AddCarStepperBloc>();
+                        state.isComplete
+                            ? bloc.add(SaveCarEvent())
+                            : bloc.add(NextStepEvent());
                       }
                     : null,
                 onStepCancel: state.currentStep > 0
