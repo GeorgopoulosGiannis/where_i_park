@@ -13,9 +13,6 @@ class CarStepperScreen extends StatelessWidget {
     if (state.selectedCar != null) {
       return StepState.complete;
     }
-    if (state.currentStep == 0) {
-      return StepState.editing;
-    }
     return StepState.indexed;
   }
 
@@ -23,9 +20,7 @@ class CarStepperScreen extends StatelessWidget {
     if (state.trackMethod != null) {
       return StepState.complete;
     }
-    if (state.currentStep == 1) {
-      return StepState.editing;
-    }
+
     return StepState.indexed;
   }
 
@@ -35,13 +30,13 @@ class CarStepperScreen extends StatelessWidget {
       child: BlocProvider<AddCarStepperBloc>(
         create: (context) => sl<AddCarStepperBloc>(),
         child: BlocConsumer<AddCarStepperBloc, AddCarStepperState>(
-          listener: (context, state) async{
+          listener: (context, state) async {
             if (state.status == AddCarStepperStatus.error) {
               showDialog(
                 context: context,
                 builder: (context) {
-                  return const ErrorDialog(
-                    body: '',
+                  return ErrorDialog(
+                    body: state.errorMessage,
                     title: 'Failed to save car',
                   );
                 },
@@ -61,34 +56,48 @@ class CarStepperScreen extends StatelessWidget {
             }
           },
           builder: (context, state) {
+            final theme = Theme.of(context);
             return Scaffold(
               appBar: AppBar(),
-              body: Stepper(
-                physics: const BouncingScrollPhysics(),
-                currentStep: state.currentStep,
-                onStepContinue: state.enabledCurrentStep
-                    ? () {
-                        final bloc = context.read<AddCarStepperBloc>();
-                        state.isComplete
-                            ? bloc.add(SaveCarEvent())
-                            : bloc.add(NextStepEvent());
-                      }
-                    : null,
-                onStepCancel: state.currentStep > 0
-                    ? () {
-                        context
-                            .read<AddCarStepperBloc>()
-                            .add(PreviousStepEvent());
-                      }
-                    : null,
-                steps: [
-                  CarStep(
-                    getCarStepState(state),
+              body: Theme(
+                data: theme.copyWith(
+                  textTheme: theme.textTheme.copyWith(
+                    bodyText1: theme.textTheme.bodyText1?.copyWith(
+                      fontSize: 22,
+                    ),
+                    caption: theme.textTheme.caption?.copyWith(
+                      fontSize: 16,
+                    ),
                   ),
-                  MethodStep(
-                    getMethodStepState(state),
-                  ),
-                ],
+                ),
+                child: Stepper(
+                  physics: const BouncingScrollPhysics(),
+                  currentStep: state.currentStep,
+                  onStepContinue: state.enabledCurrentStep
+                      ? () {
+                          final bloc = context.read<AddCarStepperBloc>();
+                          state.isComplete && state.currentStep == 1
+                              ? bloc.add(SaveCarEvent())
+                              : bloc.add(NextStepEvent());
+                        }
+                      : null,
+                  onStepCancel: state.currentStep > 0
+                      ? () {
+                          context
+                              .read<AddCarStepperBloc>()
+                              .add(PreviousStepEvent());
+                        }
+                      : null,
+                  steps: [
+                    CarStep(
+                      getCarStepState(state),
+                      showSubtitle: state.currentStep == 0,
+                    ),
+                    MethodStep(
+                      getMethodStepState(state),
+                    ),
+                  ],
+                ),
               ),
             );
           },

@@ -79,7 +79,7 @@ class BluetoothManager {
     if (savedCar == null) {
       return;
     }
-    final position = await Geolocator.getCurrentPosition();
+    final position = await sl<LocationManager>().getCurrentLocation();
     final placemark =
         await placemarkFromCoordinates(position.latitude, position.longitude);
     final carLocationsRepo = sl<CarLocationsRepository>();

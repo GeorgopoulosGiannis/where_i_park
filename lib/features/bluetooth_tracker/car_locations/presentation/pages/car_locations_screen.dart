@@ -82,7 +82,7 @@ class CarLocationsScreen extends StatelessWidget {
                           Flexible(
                             child: ColoredBox(
                               color: Colors
-                                  .grey, // Theme.of(context).colorScheme.primary,
+                                  .white, 
                               child: ListView.builder(
                                 scrollDirection: Axis.horizontal,
                                 itemCount: state.locations.length,

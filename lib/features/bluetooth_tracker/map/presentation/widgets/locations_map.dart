@@ -34,9 +34,10 @@ class _LocationsMapState extends State<LocationsMap> {
           previous.zoomedLocation != current.zoomedLocation,
       listener: (context, state) async {
         final mapController = await _controller.future;
+        final newLocation = state.markers[state.zoomedLocation]!;
+        mapController.moveCamera(CameraUpdate.newLatLng(newLocation.position));
 
-        mapController.showMarkerInfoWindow(
-            state.markers[state.zoomedLocation]!.markerId);
+        await mapController.showMarkerInfoWindow(newLocation.markerId);
       },
       builder: (context, state) {
         if (state.status == Status.loading) {
@@ -52,6 +53,7 @@ class _LocationsMapState extends State<LocationsMap> {
         if (state.status == Status.loaded) {
           return GoogleMap(
             mapToolbarEnabled: true,
+            myLocationEnabled: true,
             mapType: MapType.normal,
             initialCameraPosition: state.cameraPosition!,
             markers: Set<Marker>.of(state.markers.values),

@@ -20,7 +20,7 @@ class AddCarStepperBloc extends Bloc<AddCarStepperEvent, AddCarStepperState> {
   ) : super(
           const AddCarStepperState(
             selectedCar: null,
-            trackMethod: null,
+            trackMethod: TrackMethod.automatic,
             currentStep: 0,
             status: AddCarStepperStatus.loaded,
           ),
@@ -98,6 +98,20 @@ class AddCarStepperBloc extends Bloc<AddCarStepperEvent, AddCarStepperState> {
         status: AddCarStepperStatus.loading,
       ),
     );
+    bool hasPermission = false;
+    if (state.trackMethod == TrackMethod.notification) {
+      hasPermission = await locationManager.getPermissionForManual();
+    } else if (state.trackMethod == TrackMethod.automatic) {
+      hasPermission = await locationManager.getPermissionForAutomatic();
+    }
+    if (!hasPermission) {
+      emit(
+        state.copyWith(
+            status: AddCarStepperStatus.error,
+            errorMessage: 'Please enable location permissions'),
+      );
+      return;
+    }
 
     final resultOrFailure = await saveCars(
       [
@@ -107,6 +121,7 @@ class AddCarStepperBloc extends Bloc<AddCarStepperEvent, AddCarStepperState> {
     emit(
       resultOrFailure.fold(
         (left) => state.copyWith(
+          errorMessage: left.message,
           status: AddCarStepperStatus.error,
         ),
         (right) => state.copyWith(

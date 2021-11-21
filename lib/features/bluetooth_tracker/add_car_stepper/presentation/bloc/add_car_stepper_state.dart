@@ -24,18 +24,19 @@ class AddCarStepperState extends Equatable {
   final int currentStep;
   final AddCarStepperStatus status;
   final Car? selectedCar;
-  final TrackMethod? trackMethod;
+  final TrackMethod trackMethod;
+  final String errorMessage;
 
   bool get enabledCurrentStep =>
-      currentStep == 0 && selectedCar != null ||
-      currentStep == 1 && trackMethod != null;
-  bool get isComplete => selectedCar != null && trackMethod != null;
+      currentStep == 0 && selectedCar != null || currentStep == 1;
+  bool get isComplete => selectedCar != null && currentStep == 1;
 
   const AddCarStepperState({
     required this.status,
     required this.currentStep,
     required this.selectedCar,
     required this.trackMethod,
+    this.errorMessage = '',
   });
 
   AddCarStepperState copyWith({
@@ -43,9 +44,11 @@ class AddCarStepperState extends Equatable {
     TrackMethod? trackMethod,
     int? currentStep,
     AddCarStepperStatus? status,
+    String? errorMessage,
   }) =>
       AddCarStepperState(
           status: status ?? this.status,
+          errorMessage: errorMessage ?? this.errorMessage,
           selectedCar: selectedCar ?? this.selectedCar,
           trackMethod: trackMethod ?? this.trackMethod,
           currentStep: currentStep ?? this.currentStep);
@@ -53,8 +56,9 @@ class AddCarStepperState extends Equatable {
   @override
   List<Object> get props => [
         selectedCar ?? -1,
-        trackMethod ?? -1,
+        trackMethod,
         currentStep,
         status,
+        errorMessage,
       ];
 }

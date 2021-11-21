@@ -97,11 +97,10 @@ class MapBloc extends Bloc<MapEvent, MapState> {
     List<CarLocation> previousLocs,
   ) {
     final markers = <CarLocation, Marker>{};
-
+    var i = 0;
     for (var loc in previousLocs) {
-      var i = 0;
-
-      final markerId = MarkerId('${car.address}-$i');
+      final id = '${car.address}-$i';
+      final markerId = MarkerId(id);
       final marker = Marker(
         markerId: markerId,
         position: LatLng(loc.position.latitude, loc.position.longitude),
@@ -116,6 +115,7 @@ class MapBloc extends Bloc<MapEvent, MapState> {
         },
       );
       markers[loc] = marker;
+      i++;
     }
     return markers;
   }

@@ -5,37 +5,39 @@ import 'package:where_i_park/features/bluetooth_tracker/bonded_devices/presentat
 import 'package:where_i_park/features/bluetooth_tracker/cars/domain/entities/car.dart';
 
 class CarStep extends Step {
-  CarStep(StepState stepState)
+  CarStep(StepState stepState, {bool showSubtitle = false})
       : super(
           title: const Padding(
             padding: EdgeInsets.symmetric(vertical: 10.0),
             child: Text('Choose Car'),
           ),
-          subtitle: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                  'If you dont see your car listed below make sure that:'),
-              const SizedBox(
-                height: 10,
-              ),
-              Container(
-                margin: const EdgeInsets.only(left: 8),
-                child: const Text(
-                  '1) You have connected at least once with your car',
-                ),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              Container(
-                margin: const EdgeInsets.only(left: 8),
-                child: const Text(
-                  '2) You have bluetooth enabled',
-                ),
-              ),
-            ],
-          ),
+          subtitle: showSubtitle
+              ? Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                        'If you dont see your car listed below make sure that:'),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Container(
+                      margin: const EdgeInsets.only(left: 8),
+                      child: const Text(
+                        '1) You have connected at least once with your car',
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Container(
+                      margin: const EdgeInsets.only(left: 8),
+                      child: const Text(
+                        '2) You have bluetooth enabled',
+                      ),
+                    ),
+                  ],
+                )
+              : null,
           content: const _CarStepBody(),
           state: stepState,
         );
@@ -56,71 +58,102 @@ class _CarStepBody extends StatelessWidget {
           return BlocBuilder<AddCarStepperBloc, AddCarStepperState>(
             builder: (context, state) {
               return Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: DropdownButton(
-                  isExpanded: true,
-                  isDense: true,
-                  hint: const Text('Select car'),
-                  onChanged: (String? newValue) {
-                    final dev = devices.firstWhere((c) => c.address == newValue);
-                    context.read<AddCarStepperBloc>().add(
-                          SelectedCarEvent(
-                            Car(name: dev.name, address: dev.address),
-                          ),
-                        );
-                  },
-                  value: state.selectedCar?.address,
-                  items: devices
-                      .map(
-                        (e) => DropdownMenuItem(
-                          child: Container(
-                            width: double.infinity,
-                            alignment: Alignment.centerLeft,
-                            child: Text.rich(
-                              TextSpan(
-                                children: [
-                                  TextSpan(
-                                    text: e.name,
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  const TextSpan(text: '  '),
-                                  TextSpan(
-                                    text: '(${e.address})',
-                                    style: const TextStyle(
-                                      fontStyle: FontStyle.italic,
-                                    ),
-                                  ),
-                                ],
+                padding: const EdgeInsets.only(
+                  left: 8.0,
+                  right: 8.0,
+                  top: 40,
+                  bottom: 10,
+                ),
+                child: DecoratedBox(
+                  decoration: const ShapeDecoration(
+                    shape: RoundedRectangleBorder(
+                      side: BorderSide(
+                        width: 0.0,
+                        style: BorderStyle.solid,
+                      ),
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(
+                          5.0,
+                        ),
+                      ),
+                    ),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: DropdownButton(
+                      isExpanded: true,
+                      isDense: true,
+                      hint: const Text(
+                        'Select car',
+                        style: TextStyle(
+                          fontStyle: FontStyle.italic,
+                        ),
+                      ),
+                      underline: const SizedBox(),
+                      onChanged: (String? newValue) {
+                        final dev =
+                            devices.firstWhere((c) => c.address == newValue);
+                        context.read<AddCarStepperBloc>().add(
+                              SelectedCarEvent(
+                                Car(name: dev.name, address: dev.address),
                               ),
-                            ),
-                            padding: const EdgeInsets.symmetric(vertical: 4),
-                            decoration: const BoxDecoration(
-                              border: Border(
-                                bottom: BorderSide(
-                                  color: Colors.grey,
-                                  width: 0.0,
+                            );
+                      },
+                      value: state.selectedCar?.address,
+                      items: devices
+                          .map(
+                            (e) => DropdownMenuItem(
+                              child: Container(
+                                width: double.infinity,
+                                alignment: Alignment.centerLeft,
+                                child: Text.rich(
+                                  TextSpan(
+                                    children: [
+                                      TextSpan(
+                                        text: e.name,
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      const TextSpan(text: '  '),
+                                      TextSpan(
+                                        text: '(${e.address})',
+                                        style: const TextStyle(
+                                          fontStyle: FontStyle.italic,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 4),
+                                decoration: const BoxDecoration(
+                                  border: Border(
+                                    bottom: BorderSide(
+                                      color: Colors.grey,
+                                      width: 0.0,
+                                    ),
+                                  ),
                                 ),
                               ),
+                              value: e.address,
                             ),
-                          ),
-                          value: e.address,
-                        ),
-                      )
-                      .toList(),
-                  selectedItemBuilder: (context) {
-                    return devices
-                        .map(
-                          (e) => Text(
-                            e.name,
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        )
-                        .toList();
-                  },
+                          )
+                          .toList(),
+                      selectedItemBuilder: (context) {
+                        return devices
+                            .map(
+                              (e) => Text(
+                                e.name,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            )
+                            .toList();
+                      },
+                    ),
+                  ),
                 ),
               );
             },
