@@ -84,6 +84,7 @@ class CarLocationsScreen extends StatelessWidget {
                               color: Colors
                                   .white, 
                               child: ListView.builder(
+                                physics: const BouncingScrollPhysics(),
                                 scrollDirection: Axis.horizontal,
                                 itemCount: state.locations.length,
                                 itemBuilder: (context, i) {

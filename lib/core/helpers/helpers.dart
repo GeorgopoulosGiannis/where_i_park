@@ -2,6 +2,6 @@ import 'package:intl/intl.dart';
 
 class Helpers {
   static String toLocaleDateString(DateTime dt) => DateFormat(
-        'EEE, MMM d, ' 'yy ' 'HH:MM',
+        'EEEE d, MMMM ' 'yyyy \n' 'HH:MM',
       ).format(dt.toLocal()).toString();
 }

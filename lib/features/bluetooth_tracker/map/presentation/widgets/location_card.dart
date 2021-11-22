@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:maps_launcher/maps_launcher.dart';
 import 'package:provider/provider.dart';
 import 'package:where_i_park/core/helpers/helpers.dart';
 import 'package:where_i_park/features/bluetooth_tracker/car_locations/domain/entities/car_location.dart';
@@ -11,10 +12,11 @@ class LocationCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cardWidth = MediaQuery.of(context).size.width * 0.7;
     return Container(
       margin: const EdgeInsets.all(10),
       padding: const EdgeInsets.all(10),
-      width: 120,
+      width: cardWidth,
       decoration: BoxDecoration(
         color: Colors.grey[200],
         border: context.watch<MapBloc>().state.zoomedLocation == location
@@ -35,25 +37,63 @@ class LocationCard extends StatelessWidget {
           )
         ],
       ),
-      child: InkWell(
-        onTap: () {
-          context.read<MapBloc>().add(SelectLocationEvt(location));
-        },
-        child: Column(
-          children: [
-            Text(
-              '${location.placemark.locality}, ${location.placemark.street}\n',
+      child: Column(
+        children: [
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Text(
+              '${location.placemark.locality}, ${location.placemark.street}',
+              overflow: TextOverflow.ellipsis,
+              maxLines: 2,
               style: const TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            Text(
-              Helpers.toLocaleDateString(location.position.timestamp!),
-            )
-          ],
-        ),
+          ),
+          const SizedBox(
+            height: 5,
+          ),
+          Text(
+            Helpers.toLocaleDateString(location.position.timestamp!),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(
+            height: 10,
+          ),
+          DecoratedBox(
+            decoration: const BoxDecoration(
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black26,
+                  blurRadius: 3,
+                  spreadRadius: 3,
+                )
+              ],
+            ),
+            child: Ink(
+              width: cardWidth * 0.6,
+              child: Material(
+                borderRadius: BorderRadius.circular(5),
+                color: Colors.blue,
+                child: InkWell(
+                  onTap: () {
+                    MapsLauncher.launchCoordinates(location.position.latitude, location.position.longitude);
+                  },
+                  child: const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 15.0),
+                    child: Icon(
+                      Icons.assistant_navigation,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
+      //  ),
     );
   }
 }

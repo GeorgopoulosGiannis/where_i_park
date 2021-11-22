@@ -52,7 +52,7 @@ class _LocationsMapState extends State<LocationsMap> {
         }
         if (state.status == Status.loaded) {
           return GoogleMap(
-            mapToolbarEnabled: true,
+            mapToolbarEnabled: false,
             myLocationEnabled: true,
             mapType: MapType.normal,
             initialCameraPosition: state.cameraPosition!,
