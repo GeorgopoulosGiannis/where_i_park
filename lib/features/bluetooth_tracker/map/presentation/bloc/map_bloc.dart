@@ -64,13 +64,15 @@ class MapBloc extends Bloc<MapEvent, MapState> {
         event.locations.map((e) => e.position).toList(),
       );
     }
-    emit(state.copyWith(
-      status: Status.loaded,
-      car: event.car,
-      markers: markers,
-      cameraPosition: cameraPosition,
-      zoomedLocation: event.locations.first,
-    ));
+    emit(
+      state.copyWith(
+        status: Status.loaded,
+        car: event.car,
+        markers: markers,
+        cameraPosition: cameraPosition,
+        zoomedLocation: event.locations.first,
+      ),
+    );
   }
 
   Future<CameraPosition> getCameraPosition(List<Position> positions) async {
@@ -155,8 +157,24 @@ class MapBloc extends Bloc<MapEvent, MapState> {
     SelectLocationEvt event,
     Emitter<MapState> emit,
   ) {
+    final newMarkers = state.markers.map((key, value) {
+      return MapEntry(
+        key,
+        value.copyWith(
+          iconParam:  BitmapDescriptor.defaultMarker
+        ),
+      );
+    })
+      ..update(event.location, (marker) {
+        return marker.copyWith(
+          iconParam: BitmapDescriptor.defaultMarkerWithHue(
+            BitmapDescriptor.hueViolet,
+          ),
+        );
+      });
     emit(
       state.copyWith(
+        markers: newMarkers,
         zoomedLocation:
             state.zoomedLocation == event.location ? null : event.location,
       ),

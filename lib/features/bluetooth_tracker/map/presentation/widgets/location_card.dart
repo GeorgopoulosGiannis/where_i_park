@@ -20,7 +20,7 @@ class LocationCard extends StatelessWidget {
       ),
       onVisibilityChanged: (VisibilityInfo info) {
         var visiblePercentage = info.visibleFraction * 100;
-        if(visiblePercentage >80){
+        if(visiblePercentage >50){
           context.read<MapBloc>().add(SelectLocationEvt(location));
         }
       },
