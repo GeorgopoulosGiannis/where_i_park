@@ -16,7 +16,15 @@ class CarsScreen extends StatelessWidget {
           appBar: AppBar(
             centerTitle: true,
             backgroundColor: state.isEdit ? Colors.red : null,
-            title: state.isEdit ? null : const Text('Where did i Park?'),
+            title: state.isEdit
+                ? null
+                : const Text(
+                    'Where did i Park?',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      
+                    ),
+                  ),
             leading: state.isEdit
                 ? IconButton(
                     onPressed: () {
@@ -44,7 +52,7 @@ class CarsScreen extends StatelessWidget {
                   ]
                 : null,
           ),
-          body:const CarsList(),
+          body: const CarsList(),
           floatingActionButton: state.isEdit
               ? null
               : FloatingActionButton.extended(

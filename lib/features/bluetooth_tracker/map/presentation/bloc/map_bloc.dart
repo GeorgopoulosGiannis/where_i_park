@@ -135,7 +135,7 @@ class MapBloc extends Bloc<MapEvent, MapState> {
     return cameraPosition;
   }
 
-  CameraPosition get defPosition => const CameraPosition(
+  static CameraPosition get defPosition => const CameraPosition(
         bearing: 192.8334901395799,
         target: LatLng(37.43296265331129, -122.08832357078792),
         tilt: 59.440717697143555,
@@ -160,9 +160,7 @@ class MapBloc extends Bloc<MapEvent, MapState> {
     final newMarkers = state.markers.map((key, value) {
       return MapEntry(
         key,
-        value.copyWith(
-          iconParam:  BitmapDescriptor.defaultMarker
-        ),
+        value.copyWith(iconParam: BitmapDescriptor.defaultMarker),
       );
     })
       ..update(event.location, (marker) {

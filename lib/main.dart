@@ -5,7 +5,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:wakelock/wakelock.dart';
 
-
 import 'core/presentation/bloc/app_bloc.dart';
 import 'features/home/presentation/cubit/home_cubit.dart';
 import 'services/injector.dart';
@@ -46,8 +45,8 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Where did i park?',
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
+        theme: ThemeData.from(
+          colorScheme: const ColorScheme.light(),
         ),
         home: const SafeArea(
           child: HomeScreen(),
