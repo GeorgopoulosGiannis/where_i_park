@@ -95,7 +95,11 @@ class _CarStepBody extends StatelessWidget {
                             devices.firstWhere((c) => c.address == newValue);
                         context.read<AddCarStepperBloc>().add(
                               SelectedCarEvent(
-                                Car(name: dev.name, address: dev.address),
+                                Car(
+                                  tracking: TrackMethod.automatic,
+                                  name: dev.name,
+                                  address: dev.address,
+                                ),
                               ),
                             );
                       },

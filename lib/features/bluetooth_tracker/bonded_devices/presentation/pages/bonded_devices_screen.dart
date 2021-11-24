@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:where_i_park/core/presentation/bloc/app_bloc.dart';
+import 'package:where_i_park/features/bluetooth_tracker/add_car_stepper/presentation/bloc/add_car_stepper_bloc.dart';
 import 'package:where_i_park/features/bluetooth_tracker/bonded_devices/presentation/widgets/bonded_devices_list.dart';
 import 'package:where_i_park/features/bluetooth_tracker/cars/domain/entities/car.dart';
 import 'package:where_i_park/features/bluetooth_tracker/cars/presentation/bloc/cars_bloc.dart'
@@ -39,6 +40,7 @@ class BondedDevicesScreen extends StatelessWidget {
                           AddCarsEvent(
                             [
                               Car(
+                                tracking: TrackMethod.automatic,
                                 name: item.name,
                                 address: item.address,
                               ),

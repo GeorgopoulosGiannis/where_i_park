@@ -61,6 +61,11 @@ class AddCarStepperBloc extends Bloc<AddCarStepperEvent, AddCarStepperState> {
     if (hasPermission) {
       emit(
         state.copyWith(
+          selectedCar: Car(
+            tracking: event.method,
+            name: state.selectedCar!.name,
+            address: state.selectedCar!.address,
+          ),
           trackMethod: event.method,
         ),
       );

@@ -1,7 +1,13 @@
+import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:injectable/injectable.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:app_settings/app_settings.dart';
+import 'package:where_i_park/features/bluetooth_tracker/car_locations/domain/entities/car_location.dart';
+import 'package:where_i_park/features/bluetooth_tracker/cars/data/models/car_model.dart';
+import 'package:where_i_park/features/bluetooth_tracker/cars/domain/entities/car.dart';
+import 'package:where_i_park/features/bluetooth_tracker/cars/domain/repositories/car_locations_repository.dart';
+import 'package:where_i_park/services/injector.dart';
 
 @lazySingleton
 class LocationManager {
@@ -10,7 +16,6 @@ class LocationManager {
   /// When the location services are not enabled or permissions
   /// are denied the `Future` will return an error.
   Future<Position> getCurrentLocation() async {
-    
     // return Position(
     //   longitude: 23.73337218401643,
     //   latitude: 37.907393091203936,
@@ -64,5 +69,19 @@ class LocationManager {
     }
     final whenInUse = await Permission.locationWhenInUse.request();
     return whenInUse.isGranted;
+  }
+
+  Future<void> saveCarLocation(Car car) async {
+    final position = await getCurrentLocation();
+    final placemark =
+        await placemarkFromCoordinates(position.latitude, position.longitude);
+    final carLocationsRepo = sl<CarLocationsRepository>();
+    await carLocationsRepo.pushToCarLocations(
+      car,
+      CarLocation(
+        position: position,
+        placemark: placemark.first,
+      ),
+    );
   }
 }

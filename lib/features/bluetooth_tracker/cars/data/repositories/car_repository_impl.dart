@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:either_dart/either.dart';
-import 'package:geolocator/geolocator.dart';
+
 import 'package:injectable/injectable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:where_i_park/core/constants.dart';
@@ -38,6 +38,7 @@ class CarRepositoryImpl extends CarRepository {
       final carModels = cars
           .map(
             (e) => CarModel(
+              tracking: e.tracking,
               address: e.address,
               name: e.name,
             ),
@@ -99,6 +100,6 @@ class CarRepositoryImpl extends CarRepository {
   }
 
   List<T> _mergeListsDistinct<T>(List<T> list1, List<T> list2) {
-    return <T>{...list1, ...list2}.toList();
+    return <T>{...list2, ...list1}.toList();
   }
 }

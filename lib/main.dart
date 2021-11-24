@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:wakelock/wakelock.dart';
+import 'package:where_i_park/services/notification_manager.dart';
 
 import 'core/presentation/bloc/app_bloc.dart';
 import 'features/home/presentation/cubit/home_cubit.dart';
@@ -21,8 +22,13 @@ void main() async {
     await Wakelock.enable();
     await configureDependencies();
     await BluetoothManager.init();
+
     runApp(const MyApp());
   });
+}
+
+Future<void> onSelectNotification(String? payload) async {
+  print(payload);
 }
 
 class MyApp extends StatelessWidget {

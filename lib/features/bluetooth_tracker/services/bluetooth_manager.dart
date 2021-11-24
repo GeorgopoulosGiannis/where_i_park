@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:isolate';
 
 import 'package:bluetooth_events/bluetooth_events.dart';
@@ -8,7 +9,9 @@ import 'package:injectable/injectable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:where_i_park/core/constants.dart';
 import 'package:where_i_park/core/presentation/bloc/app_bloc.dart';
+import 'package:where_i_park/features/bluetooth_tracker/add_car_stepper/presentation/bloc/add_car_stepper_bloc.dart';
 import 'package:where_i_park/features/bluetooth_tracker/car_locations/domain/entities/car_location.dart';
+import 'package:where_i_park/features/bluetooth_tracker/cars/data/models/car_model.dart';
 
 import 'package:where_i_park/features/bluetooth_tracker/cars/domain/repositories/car_locations_repository.dart';
 import '../cars/domain/repositories/car_repository.dart';
@@ -67,7 +70,9 @@ class BluetoothManager {
 
   static Future<void> _handleDeviceDisconnected(String address) async {
     final _prefs = await SharedPreferences.getInstance();
+    await _prefs.reload();
     await _prefs.remove(Constants.connectedDevice);
+    
     final isRegistered = sl.isRegistered<CarRepository>();
 
     if (!isRegistered) {
@@ -79,23 +84,16 @@ class BluetoothManager {
     if (savedCar == null) {
       return;
     }
-    final position = await sl<LocationManager>().getCurrentLocation();
-    final placemark =
-        await placemarkFromCoordinates(position.latitude, position.longitude);
-    final carLocationsRepo = sl<CarLocationsRepository>();
-    await carLocationsRepo.pushToCarLocations(
-      savedCar,
-      CarLocation(
-        position:position,
-        placemark: placemark.first,
-      ),
-    );
-    final notificationManager = sl<NotificationManager>();
-    await NotificationManager.initialize();
-    notificationManager.showNotification(
-      id: 123,
-      title: 'Car Location added!',
-      body: savedCar.name,
-    );
+    if (savedCar.tracking == TrackMethod.automatic) {
+      await sl<LocationManager>().saveCarLocation(savedCar);
+    } else {
+      await NotificationManager.initialize();
+      NotificationManager.showNotification(
+        id: 123,
+        title: 'Car Disconnected tap here to save Location!!',
+        body: savedCar.name,
+        payload: json.encode((savedCar as CarModel).toJson()),
+      );
+    }
   }
 }

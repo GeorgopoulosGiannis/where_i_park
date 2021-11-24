@@ -17,7 +17,7 @@ class CarStepperScreen extends StatelessWidget {
   }
 
   StepState getMethodStepState(AddCarStepperState state) {
-    if (state.trackMethod != null) {
+    if (state.selectedCar != null ) {
       return StepState.complete;
     }
 
