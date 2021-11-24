@@ -42,10 +42,6 @@ class CarLocationsScreen extends StatelessWidget {
                       )
                     : null,
                 actions: [
-                  if (state.status == CarLocationStatus.loaded && !state.isEdit)
-                    state.viewStyle == ViewStyle.list
-                        ? const MapViewButton()
-                        : const ListViewButton(),
                   if (state.isEdit) const ClearLocationsButton(),
                 ],
               ),
@@ -69,31 +65,30 @@ class CarLocationsScreen extends StatelessWidget {
                   if (state.viewStyle == ViewStyle.map) {
                     return BlocProvider(
                       create: (context) => sl<MapBloc>()
-                        ..add(LoadMarkersForCar(
-                          state.car,
-                          state.locations,
-                        )),
+                        ..add(
+                          LoadMarkersForCar(
+                            state.car,
+                            state.lastLocation != null
+                                ? [state.lastLocation!]
+                                : [],
+                          ),
+                        ),
                       child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           const Flexible(
                             flex: 3,
                             child: LocationsMap(),
                           ),
-                          Flexible(
-                            child: ColoredBox(
-                              color: Colors
-                                  .white, 
-                              child: ListView.builder(
-                                physics: const BouncingScrollPhysics(),
-                                scrollDirection: Axis.horizontal,
-                                itemCount: state.locations.length,
-                                itemBuilder: (context, i) {
-                                  final location = state.locations[i];
-                                  return LocationCard(location: location);
-                                },
+                          if (state.lastLocation != null)
+                            Flexible(
+                              child: ColoredBox(
+                                color: Colors.white,
+                                child: LocationCard(
+                                  location: state.lastLocation!,
+                                ),
                               ),
                             ),
-                          ),
                         ],
                       ),
                     );

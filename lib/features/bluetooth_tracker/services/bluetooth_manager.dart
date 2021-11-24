@@ -86,7 +86,7 @@ class BluetoothManager {
     await carLocationsRepo.pushToCarLocations(
       savedCar,
       CarLocation(
-        position: position,
+        position:position,
         placemark: placemark.first,
       ),
     );

@@ -18,11 +18,24 @@ class CarsScreen extends StatelessWidget {
             backgroundColor: state.isEdit ? Colors.red : null,
             title: state.isEdit
                 ? null
-                : const Text(
-                    'Where did i Park?',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      
+                : const Text.rich(
+                    TextSpan(
+                      children: [
+                        TextSpan(
+                          text: 'Where did i Park?',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        WidgetSpan(
+                          child: SizedBox(
+                            width: 10,
+                          ),
+                        ),
+                        WidgetSpan(
+                          child: Icon(Icons.car_rental),
+                        ),
+                      ],
                     ),
                   ),
             leading: state.isEdit

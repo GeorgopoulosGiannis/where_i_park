@@ -52,7 +52,7 @@ class MapBloc extends Bloc<MapEvent, MapState> {
       cameraPosition = locOrFalure.fold(
         (left) => defPosition,
         (right) => CameraPosition(
-          zoom: 19.151926040649414,
+          zoom:13.0,
           target: LatLng(
             right.latitude,
             right.longitude,
@@ -81,7 +81,7 @@ class MapBloc extends Bloc<MapEvent, MapState> {
       return locOrFalure.fold(
         (left) => defPosition,
         (right) => CameraPosition(
-          zoom: 19.151926040649414,
+          zoom: 0.0,
           target: LatLng(
             right.latitude,
             right.longitude,
@@ -130,7 +130,7 @@ class MapBloc extends Bloc<MapEvent, MapState> {
         lastLocation.latitude,
         lastLocation.longitude,
       ),
-      zoom: 19.151926040649414,
+      zoom:13.0,
     );
     return cameraPosition;
   }
@@ -139,7 +139,7 @@ class MapBloc extends Bloc<MapEvent, MapState> {
         bearing: 192.8334901395799,
         target: LatLng(37.43296265331129, -122.08832357078792),
         tilt: 59.440717697143555,
-        zoom: 19.151926040649414,
+        zoom:13.0,
       );
 
   FutureOr<void> _onMarkerTappedEvent(

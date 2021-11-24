@@ -12,7 +12,12 @@ class CarLocationsState extends Equatable {
   final String message;
   final bool isEdit;
   final List<CarLocation> selected;
-
+  CarLocation? get lastLocation => locations.isEmpty
+      ? null
+      : locations.reduce((value, element) =>
+          value.position.timestamp!.isAfter(element.position.timestamp!)
+              ? value
+              : element);
   const CarLocationsState({
     required this.status,
     required this.car,
