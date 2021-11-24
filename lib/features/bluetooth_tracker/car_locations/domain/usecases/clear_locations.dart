@@ -16,13 +16,19 @@ class ClearLocations extends UseCase<List<CarLocation>, ClearLocationsParams> {
   Future<Either<Failure, List<CarLocation>>> call(
     ClearLocationsParams params,
   ) async {
-    return repo.clearCarLocations(params.car, params.locations);
+    return repo.clearCarLocations(
+      params.car,
+      locationsToRemove: params.locations,
+    );
   }
 }
 
 class ClearLocationsParams {
-  final List<CarLocation> locations;
+  final List<CarLocation>? locations;
   final Car car;
 
-  ClearLocationsParams(this.locations, this.car);
+  ClearLocationsParams(
+    this.car, {
+    this.locations,
+  });
 }

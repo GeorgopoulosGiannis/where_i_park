@@ -1,5 +1,11 @@
 part of 'manual_tracker_cubit.dart';
 
+enum ManualStatus {
+  idle,
+  saved,
+  failed,
+}
+
 class ManualTrackerState extends Equatable {
   final CameraPosition? initialPosition;
   final Position? lastPosition;

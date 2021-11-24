@@ -90,7 +90,7 @@ class BluetoothManager {
       await NotificationManager.initialize();
       NotificationManager.showNotification(
         id: 123,
-        title: 'Car Disconnected tap here to save Location!!',
+        title: 'Tap to save location!!',
         body: savedCar.name,
         payload: json.encode((savedCar as CarModel).toJson()),
       );

@@ -16,19 +16,22 @@ class CarLocationsRepositoryImpl extends CarLocationsRepository {
   final SharedPreferences _prefs;
 
   CarLocationsRepositoryImpl(this._prefs);
+
   @override
   Future<Either<Failure, List<CarLocation>>> clearCarLocations(
-    Car car,
-    List<CarLocation> locationsToRemove,
-  ) async {
+    Car car, {
+    List<CarLocation>? locationsToRemove,
+  }) async {
     try {
       final allLocations = _getLocationsFromStorage();
       final carLocations = allLocations[car.address];
       if (carLocations == null || carLocations.isEmpty) {
         return const Right(<CarLocation>[]);
       }
-      carLocations
-          .removeWhere((element) => locationsToRemove.contains(element));
+
+      carLocations.removeWhere(
+          (element) => locationsToRemove?.contains(element) ?? true);
+
       allLocations[car.address] = carLocations;
       _prefs.setString(Constants.carLocations, json.encode(allLocations));
       return Right(carLocations);

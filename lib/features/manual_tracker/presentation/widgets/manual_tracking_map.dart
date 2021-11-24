@@ -19,6 +19,16 @@ class ManualTrackingMap extends StatelessWidget {
                 child: CircularProgressIndicator(),
               )
             : GoogleMap(
+                markers: {
+                  if (state.lastPosition != null)
+                    Marker(
+                      markerId: MarkerId('1'),
+                      position: LatLng(
+                        state.lastPosition!.latitude,
+                        state.lastPosition!.longitude,
+                      ),
+                    ),
+                },
                 initialCameraPosition: state.initialPosition!,
                 myLocationEnabled: true,
               );

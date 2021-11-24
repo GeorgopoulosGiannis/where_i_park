@@ -111,16 +111,22 @@ class CarsBloc extends Bloc<CarsEvent, CarsState> {
       ),
     );
     final newCarsOrFailure = await removeCars(state.selected);
-    emit(
-      state.copyWith(
-        status: Status.loaded,
-        cars: newCarsOrFailure.fold(
-          (left) => [],
-          (right) => right,
+    newCarsOrFailure.fold(
+      (left) => emit(
+        state.copyWith(
+          status: Status.error,
+          message: left.message,
         ),
-        selected: [],
-        isEdit: false,
+      ),
+      (right) => emit(
+        state.copyWith(
+          status: right.isNotEmpty ? Status.loaded : Status.empty,
+          cars: right,
+          selected: [],
+          isEdit: false,
+        ),
       ),
     );
+
   }
 }

@@ -12,7 +12,49 @@ class ManualTrackingScreen extends StatelessWidget {
     return BlocProvider(
       create: (context) => sl<ManualTrackerCubit>()..load(),
       child: Scaffold(
-        appBar: AppBar(),
+        appBar: AppBar(
+          actions: [
+            Builder(
+              builder: (context) {
+                return Container(
+                  margin: const EdgeInsets.all(8.0),
+                  child: Material(
+                    color: Theme.of(context).colorScheme.primary,
+                    child: Ink(
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: Theme.of(context).colorScheme.onPrimary,
+                          ),
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        child: InkWell(
+                          onTap: () {
+                            context.read<ManualTrackerCubit>().saveCurrent();
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              children: [
+                                Icon(
+                                  Icons.location_on,
+                                  color: Theme.of(context).colorScheme.onPrimary,
+                                ),
+                                Text(
+                                  'Save location',
+                                  style: TextStyle(
+                                    color: Theme.of(context).colorScheme.onPrimary,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        )),
+                  ),
+                );
+              }
+            )
+          ],
+        ),
         body: const ManualTrackingMap(),
       ),
     );

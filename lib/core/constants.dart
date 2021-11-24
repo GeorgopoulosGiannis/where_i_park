@@ -3,4 +3,6 @@ class Constants {
   static const savedCarsKey = 'SAVED_CARS_KEY';
 
   static const carLocations = 'CAR_LOCATIONS';
+
+  static const lastManualLocation = 'LAST_MANUAL_LOC';
 }

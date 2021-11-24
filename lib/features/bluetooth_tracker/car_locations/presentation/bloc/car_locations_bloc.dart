@@ -67,7 +67,10 @@ class CarLocationsBloc extends Bloc<CarLocationsEvent, CarLocationsState> {
   ) async {
     emit(state.copyWith(status: CarLocationStatus.loading));
     final newLocationsOrFailure = await clearLocations(
-      ClearLocationsParams(state.selected, state.car),
+      ClearLocationsParams(
+        state.car,
+        locations: state.selected,
+      ),
     );
     emit(
       state.copyWith(
