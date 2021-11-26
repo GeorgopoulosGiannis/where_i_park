@@ -12,7 +12,7 @@ class MapLocationCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cardWidth = MediaQuery.of(context).size.width * 0.7;
+    final cardWidth = MediaQuery.of(context).size.width ;
     return Container(
       margin: const EdgeInsets.all(10),
       padding: const EdgeInsets.all(10),
@@ -58,6 +58,9 @@ class MapLocationCard extends StatelessWidget {
             builder: (context, state) {
               return Text('Distance: ${state.distance}');
             },
+          ),
+          const SizedBox(
+            height: 5,
           ),
           DecoratedBox(
             decoration: const BoxDecoration(

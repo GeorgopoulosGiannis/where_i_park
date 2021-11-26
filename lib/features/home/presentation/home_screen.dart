@@ -9,6 +9,9 @@ import 'package:where_i_park/services/notification_manager.dart';
 
 import 'bloc/home_bloc.dart';
 
+const verticalPadding = 0.0;
+const horizontalPadding = 15.0;
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
 
@@ -46,8 +49,8 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           );
         }
-        if(state is FailedToSaveLocation){
-            showDialog(
+        if (state is FailedToSaveLocation) {
+          showDialog(
             context: context,
             builder: (context) => const ErrorDialog(
               body: '',
@@ -63,7 +66,8 @@ class _HomeScreenState extends State<HomeScreen> {
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.symmetric(
-                  horizontal: 8.0,
+                  horizontal: horizontalPadding,
+                  vertical: verticalPadding,
                 ),
                 child: HomeItem(
                   text: 'Find\nCar',
@@ -83,7 +87,8 @@ class _HomeScreenState extends State<HomeScreen> {
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.symmetric(
-                  horizontal: 8.0,
+                  horizontal: horizontalPadding,
+                  vertical: verticalPadding,
                 ),
                 child: HomeItem(
                   text: 'Add\nBluetooth',
@@ -95,7 +100,8 @@ class _HomeScreenState extends State<HomeScreen> {
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.symmetric(
-                  horizontal: 8.0,
+                  horizontal: horizontalPadding,
+                  vertical: verticalPadding,
                 ),
                 child: HomeItem(
                   text: 'Save\nPosition',

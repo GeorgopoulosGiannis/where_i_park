@@ -65,6 +65,9 @@ class _FindCarMapState extends State<FindCarMap> {
         target: defPosition,
         zoom: 12,
       ),
+      mapToolbarEnabled: false,
+      myLocationButtonEnabled: true,
+      myLocationEnabled: true,
       markers: widget.locations
           .map(
             (loc) => Marker(

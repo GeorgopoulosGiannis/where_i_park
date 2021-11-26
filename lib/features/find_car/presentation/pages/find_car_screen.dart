@@ -16,10 +16,14 @@ class FindCarScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<FindCarBloc>(
-      create: (context) => sl<FindCarBloc>()..add(const LoadEvent()),
+      create: (context) => sl<FindCarBloc>()
+        ..add(
+          const LoadEvent(),
+        ),
       child: SafeArea(
         child: Scaffold(
           appBar: AppBar(),
+          backgroundColor: Theme.of(context).primaryColor,
           body: BlocBuilder<FindCarBloc, FindCarState>(
             builder: (context, state) {
               if (state.status == _S.loading) {
