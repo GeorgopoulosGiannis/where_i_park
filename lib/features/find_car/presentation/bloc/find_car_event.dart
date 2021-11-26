@@ -10,3 +10,9 @@ abstract class FindCarEvent extends Equatable {
 class LoadEvent extends FindCarEvent {
   const LoadEvent();
 }
+
+class PositionChangedEvent extends FindCarEvent {
+  final Position position;
+
+  const PositionChangedEvent(this.position);
+}

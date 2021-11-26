@@ -11,9 +11,6 @@ import 'package:where_i_park/core/data/models/car_location_model.dart';
 import 'package:where_i_park/core/domain/entities/bluetooth_device.dart';
 import 'package:where_i_park/core/domain/entities/car_location.dart';
 
-
-import 'package:where_i_park/services/injector.dart';
-
 class _Constants {
   static const lastLocation = 'LAST_lOCATION';
 }
@@ -33,8 +30,12 @@ class LocationManager {
   Future<CarLocation?> getLastLocation() async {
     final saved = _prefs.getString(_Constants.lastLocation);
     if (saved != null) {
-      return  CarLocationModel.fromJson(json.decode(saved));
+      return CarLocationModel.fromJson(json.decode(saved));
     }
+  }
+
+  Stream<Position> getLocationUpdates()  {
+   return Geolocator.getPositionStream();
   }
 
   Future<bool> saveCurrentLocation({

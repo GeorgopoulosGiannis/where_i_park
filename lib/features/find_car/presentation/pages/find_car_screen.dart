@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:where_i_park/features/find_car/presentation/bloc/find_car_bloc.dart';
 import 'package:where_i_park/features/find_car/presentation/widgets/find_car_map.dart';
+import 'package:where_i_park/features/find_car/presentation/widgets/map_location_card.dart';
 import 'package:where_i_park/services/injector.dart';
 
 typedef _S = FindCarStatus;
@@ -33,9 +34,21 @@ class FindCarScreen extends StatelessWidget {
               }
 
               if (state.status == _S.loaded) {
-                return FindCarMap(
-                  locations: [
-                    if (state.location != null) state.location!,
+                return Column(
+                  children: [
+                    Flexible(
+                      flex: 3,
+                      child: FindCarMap(
+                        locations: [
+                          if (state.location != null) state.location!,
+                        ],
+                      ),
+                    ),
+                    Flexible(
+                      child: MapLocationCard(
+                        location: state.location,
+                      ),
+                    )
                   ],
                 );
               }

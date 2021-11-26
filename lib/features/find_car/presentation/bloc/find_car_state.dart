@@ -6,6 +6,7 @@ class FindCarState extends Equatable {
   final FindCarStatus status;
   final Position? currentPosition;
   final CarLocation? location;
+  final String distance;
   final String message;
 
   const FindCarState({
@@ -13,6 +14,7 @@ class FindCarState extends Equatable {
     this.location,
     this.currentPosition,
     this.message = '',
+    this.distance = '0.0',
   });
 
   FindCarState copyWith({
@@ -20,14 +22,16 @@ class FindCarState extends Equatable {
     Position? currentPosition,
     CarLocation? location,
     String? message,
+    String? distance,
   }) =>
       FindCarState(
         status: status ?? this.status,
         currentPosition: currentPosition ?? this.currentPosition,
         location: location ?? this.location,
         message: message ?? this.message,
+        distance: distance ?? this.distance,
       );
-      
+
   @override
   List<Object?> get props => [
         status,
@@ -35,4 +39,6 @@ class FindCarState extends Equatable {
         currentPosition,
         message,
       ];
+
+
 }

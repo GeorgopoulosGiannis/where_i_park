@@ -11,9 +11,9 @@ import 'package:shared_preferences/shared_preferences.dart' as _i5;
 import '../core/domain/usecases/get_current_position.dart' as _i8;
 import '../core/domain/usecases/get_last_location.dart' as _i9;
 import '../core/domain/usecases/save_current_location.dart' as _i7;
+import '../features/find_car/domain/usecases/get_location_updates.dart' as _i10;
 import '../features/find_car/presentation/bloc/find_car_bloc.dart' as _i12;
-import '../features/find_car/presentation/widgets/bloc/map_bloc.dart' as _i11;
-import '../features/home/presentation/bloc/home_bloc.dart' as _i10;
+import '../features/home/presentation/bloc/home_bloc.dart' as _i11;
 import 'bluetooth_manager.dart' as _i3;
 import 'location_manager.dart' as _i6;
 import 'notification_manager.dart' as _i4;
@@ -37,12 +37,14 @@ Future<_i1.GetIt> $initGetIt(_i1.GetIt get,
       () => _i8.GetCurrentPosition(get<_i6.LocationManager>()));
   gh.lazySingleton<_i9.GetLastLocation>(
       () => _i9.GetLastLocation(get<_i6.LocationManager>()));
-  gh.factory<_i10.HomeBloc>(
-      () => _i10.HomeBloc(get<_i7.SaveCurrentLocation>()));
-  gh.factory<_i11.MapBloc>(() =>
-      _i11.MapBloc(get<_i8.GetCurrentPosition>(), get<_i9.GetLastLocation>()));
+  gh.lazySingleton<_i10.GetLocationUpdates>(
+      () => _i10.GetLocationUpdates(get<_i6.LocationManager>()));
+  gh.factory<_i11.HomeBloc>(
+      () => _i11.HomeBloc(get<_i7.SaveCurrentLocation>()));
   gh.factory<_i12.FindCarBloc>(() => _i12.FindCarBloc(
-      get<_i8.GetCurrentPosition>(), get<_i9.GetLastLocation>()));
+      get<_i8.GetCurrentPosition>(),
+      get<_i9.GetLastLocation>(),
+      get<_i10.GetLocationUpdates>()));
   return get;
 }
 
