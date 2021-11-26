@@ -1,34 +1,59 @@
+import 'dart:convert';
+
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:injectable/injectable.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:app_settings/app_settings.dart';
-import 'package:where_i_park/features/bluetooth_tracker/car_locations/domain/entities/car_location.dart';
-import 'package:where_i_park/features/bluetooth_tracker/cars/data/models/car_model.dart';
-import 'package:where_i_park/features/bluetooth_tracker/cars/domain/entities/car.dart';
-import 'package:where_i_park/features/bluetooth_tracker/cars/domain/repositories/car_locations_repository.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:where_i_park/core/data/models/bluetooth_device_model.dart';
+import 'package:where_i_park/core/data/models/car_location_model.dart';
+import 'package:where_i_park/core/domain/entities/bluetooth_device.dart';
+import 'package:where_i_park/core/domain/entities/car_location.dart';
+
+
 import 'package:where_i_park/services/injector.dart';
+
+class _Constants {
+  static const lastLocation = 'LAST_lOCATION';
+}
 
 @lazySingleton
 class LocationManager {
-  /// Determine the current position of the device.
-  ///
-  /// When the location services are not enabled or permissions
-  /// are denied the `Future` will return an error.
-  Future<Position> getCurrentLocation() async {
-    // return Position(
-    //   longitude: 23.73337218401643,
-    //   latitude: 37.907393091203936,
-    //   timestamp: DateTime.now(),
-    //   accuracy: 1,
-    //   altitude: 0.0,
-    //   heading: 0.0,
-    //   speed: 0.0,
-    //   speedAccuracy: 0.0,
-    // );
+  final SharedPreferences _prefs;
+
+  LocationManager(this._prefs);
+
+  Future<Position> getCurrentPosition() async {
     return await Geolocator.getCurrentPosition(
       desiredAccuracy: LocationAccuracy.high,
     );
+  }
+
+  Future<CarLocation?> getLastLocation() async {
+    final saved = _prefs.getString(_Constants.lastLocation);
+    if (saved != null) {
+      return  CarLocationModel.fromJson(json.decode(saved));
+    }
+  }
+
+  Future<bool> saveCurrentLocation({
+    BluetoothDevice? device,
+  }) async {
+    try {
+      final position = await getCurrentPosition();
+      final loc = CarLocationModel(
+        positionModel: position,
+        deviceModel:
+            device != null ? BluetoothDeviceModel.fromDevice(device) : null,
+      );
+      return await _prefs.setString(
+        _Constants.lastLocation,
+        json.encode(loc),
+      );
+    } catch (e) {
+      return false;
+    }
   }
 
   Future<bool> hasPermissionForAutomatic() async {
@@ -69,19 +94,5 @@ class LocationManager {
     }
     final whenInUse = await Permission.locationWhenInUse.request();
     return whenInUse.isGranted;
-  }
-
-  Future<void> saveCarLocation(Car car) async {
-    final position = await getCurrentLocation();
-    final placemark =
-        await placemarkFromCoordinates(position.latitude, position.longitude);
-    final carLocationsRepo = sl<CarLocationsRepository>();
-    await carLocationsRepo.pushToCarLocations(
-      car,
-      CarLocation(
-        position: position,
-        placemark: placemark.first,
-      ),
-    );
   }
 }

@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:where_i_park/features/bluetooth_tracker/cars/presentation/pages/cars_screen.dart';
-import 'package:where_i_park/features/manual_tracker/presentation/pages/manual_tracking_screen.dart';
-import 'package:where_i_park/features/speed_tracker/presentation/pages/speed_tracking_screen.dart';
+import 'package:provider/src/provider.dart';
+import 'package:where_i_park/core/presentation/widgets/dialogs.dart';
+
+import 'package:where_i_park/features/find_car/presentation/pages/find_car_screen.dart';
+import 'package:where_i_park/features/home/presentation/widgets/home_item.dart';
 import 'package:where_i_park/services/notification_manager.dart';
 
-import 'cubit/home_cubit.dart';
+import 'bloc/home_bloc.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -18,7 +20,6 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     checkLocalNotification();
-    
     super.initState();
   }
 
@@ -34,41 +35,79 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: BlocBuilder<HomeCubit, HomeState>(
-        builder: (context, state) {
-          if (state.index == 0) {
-            return const SpeedTrackingScreen();
-          }
-          if (state.index == 2) {
-            return const ManualTrackingScreen();
-          }
-          return const CarsScreen();
-        },
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        onTap: (index) => context.read<HomeCubit>().switchView(index),
-        currentIndex: context.watch<HomeCubit>().state.index,
-        items: const [
-          BottomNavigationBarItem(
-            label: 'Speed',
-            icon: Icon(
-              Icons.speed,
+    return BlocListener<HomeBloc, HomeState>(
+      listener: (context, state) {
+        if (state is SavedLocation) {
+          showDialog(
+            context: context,
+            builder: (context) => const SuccessDialog(
+              body: '',
+              title: 'Location Saved!',
             ),
-          ),
-          BottomNavigationBarItem(
-            label: 'Bluetooth',
-            icon: Icon(
-              Icons.bluetooth,
+          );
+        }
+        if(state is FailedToSaveLocation){
+            showDialog(
+            context: context,
+            builder: (context) => const ErrorDialog(
+              body: '',
+              title: 'Failed to Save Location :(',
             ),
-          ),
-          BottomNavigationBarItem(
-            label: 'Manual',
-            icon: Icon(
-              Icons.touch_app,
+          );
+        }
+      },
+      child: Scaffold(
+        backgroundColor: Colors.black,
+        body: Column(
+          children: [
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 8.0,
+                ),
+                child: HomeItem(
+                  text: 'Find\nCar',
+                  icon: Icons.car_rental,
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) {
+                          return const FindCarScreen();
+                        },
+                      ),
+                    );
+                  },
+                ),
+              ),
             ),
-          ),
-        ],
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 8.0,
+                ),
+                child: HomeItem(
+                  text: 'Add\nBluetooth',
+                  icon: Icons.bluetooth,
+                  onTap: () {},
+                ),
+              ),
+            ),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 8.0,
+                ),
+                child: HomeItem(
+                  text: 'Save\nPosition',
+                  icon: Icons.location_on,
+                  onTap: () {
+                    context.read<HomeBloc>().add(const SaveLocationEvent());
+                  },
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
