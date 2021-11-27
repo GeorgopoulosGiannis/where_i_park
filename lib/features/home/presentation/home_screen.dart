@@ -69,7 +69,7 @@ class _HomeScreenState extends State<HomeScreen> {
         body: Column(
           children: [
             Align(
-              alignment: Alignment.centerRight,
+              alignment: Alignment.centerLeft,
               child: Padding(
                   padding: const EdgeInsets.only(
                     right: 15.0,
@@ -142,6 +142,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   icon: BlocBuilder<HomeBloc, HomeState>(
                     builder: (context, state) {
                       return Stack(
+                        fit: StackFit.expand,
                         alignment: Alignment.center,
                         children: [
                           RiveAnimation.asset(
@@ -150,8 +151,11 @@ class _HomeScreenState extends State<HomeScreen> {
                             fit: BoxFit.contain,
                           ),
                           if (state is GettingLocation)
-                            const CircularProgressIndicator(
-                              color: Colors.white,
+                            const SizedBox(
+                              height: 100,
+                              child: CircularProgressIndicator(
+                                color: Colors.white,
+                              ),
                             ),
                         ],
                       );
