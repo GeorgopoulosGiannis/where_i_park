@@ -8,5 +8,6 @@ abstract class HomeState extends Equatable {
 }
 
 class Idle extends HomeState {}
+class GettingLocation extends HomeState {}
 class SavedLocation extends HomeState {}
 class FailedToSaveLocation extends HomeState {}

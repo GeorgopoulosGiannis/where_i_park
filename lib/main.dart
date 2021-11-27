@@ -40,7 +40,10 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'Where did i park?',
         theme: ThemeData.from(
-          colorScheme: const ColorScheme.light(),
+          colorScheme: const ColorScheme.light(
+            primary: Color.fromRGBO(100, 156, 166, 1),
+            secondary:Color.fromRGBO(172, 196, 204, 1)
+          ),
         ),
         home: const SafeArea(
           child: HomeScreen(),

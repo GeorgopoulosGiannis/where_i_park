@@ -28,6 +28,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     SaveLocationEvent event,
     Emitter<HomeState> emit,
   ) async {
+    emit(GettingLocation());
     final saved = await saveCurrentLocation();
     emit(
       saved ? SavedLocation() : FailedToSaveLocation(),

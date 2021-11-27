@@ -8,11 +8,16 @@ import 'package:where_i_park/services/injector.dart';
 
 typedef _S = FindCarStatus;
 
-class FindCarScreen extends StatelessWidget {
+class FindCarScreen extends StatefulWidget {
   const FindCarScreen({
     Key? key,
   }) : super(key: key);
 
+  @override
+  State<FindCarScreen> createState() => _FindCarScreenState();
+}
+
+class _FindCarScreenState extends State<FindCarScreen> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<FindCarBloc>(
@@ -23,7 +28,6 @@ class FindCarScreen extends StatelessWidget {
       child: SafeArea(
         child: Scaffold(
           appBar: AppBar(),
-          backgroundColor: Theme.of(context).primaryColor,
           body: BlocBuilder<FindCarBloc, FindCarState>(
             builder: (context, state) {
               if (state.status == _S.loading) {
@@ -41,7 +45,7 @@ class FindCarScreen extends StatelessWidget {
                 return Column(
                   children: [
                     Flexible(
-                      flex: 3,
+                      flex: 2,
                       child: FindCarMap(
                         locations: [
                           if (state.location != null) state.location!,
@@ -49,8 +53,17 @@ class FindCarScreen extends StatelessWidget {
                       ),
                     ),
                     Flexible(
-                      child: MapLocationCard(
-                        location: state.location,
+                      child: ListView(
+                        physics: const BouncingScrollPhysics(),
+                        scrollDirection: Axis.horizontal,
+                        children: [
+                          MapLocationCard(
+                            location: state.location,
+                          ),
+                          MapLocationCard(
+                            location: state.location,
+                          ),
+                        ],
                       ),
                     )
                   ],
