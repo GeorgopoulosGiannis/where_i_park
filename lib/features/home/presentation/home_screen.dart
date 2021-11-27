@@ -4,13 +4,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:rive/rive.dart';
 import 'package:where_i_park/core/presentation/widgets/dialogs.dart';
+import 'package:where_i_park/features/add_device/presentation/pages/add_device_screen.dart';
 
 import 'package:where_i_park/features/find_car/presentation/pages/find_car_screen.dart';
 import 'package:where_i_park/features/home/presentation/widgets/home_item.dart';
 import 'package:where_i_park/services/notification_manager.dart';
 
 import 'bloc/home_bloc.dart';
-import 'widgets/home_item_icon_container.dart';
 
 const verticalPadding = 0.0;
 const horizontalPadding = 15.0;
@@ -23,7 +23,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final _riveController = SimpleAnimation('active')..isActive = true;
+  final _riveController = SimpleAnimation('Animation 1');
 
   @override
   void initState() {
@@ -69,7 +69,7 @@ class _HomeScreenState extends State<HomeScreen> {
         body: Column(
           children: [
             Align(
-              alignment: Alignment.centerLeft,
+              alignment: Alignment.centerRight,
               child: Padding(
                   padding: const EdgeInsets.only(
                     right: 15.0,
@@ -95,7 +95,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   icon: Hero(
                     tag: 'car_icon',
                     child: Icon(
-                      Icons.directions_car_filled_rounded,
+                      Icons.map_rounded,
                       color: theme.colorScheme.onPrimary,
                       size: 65,
                     ),
@@ -122,11 +122,19 @@ class _HomeScreenState extends State<HomeScreen> {
                   title: 'Add',
                   subtitle: 'Bluetooth',
                   icon: Icon(
-                    Icons.bluetooth,
+                    Icons.bluetooth_drive,
                     color: theme.colorScheme.onPrimary,
                     size: 65,
                   ),
-                  onTap: () {},
+                  onTap: () {
+                        Navigator.of(context).push(
+                      CupertinoPageRoute(
+                        builder: (context) {
+                          return const AddDeviceScreen();
+                        },
+                      ),
+                    );
+                  },
                 ),
               ),
             ),

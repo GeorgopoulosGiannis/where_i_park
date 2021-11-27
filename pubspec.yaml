@@ -47,6 +47,7 @@ dependencies:
   maps_launcher: ^2.0.1
   visibility_detector: ^0.2.2
   rive: ^0.7.33
+  rxdart: ^0.27.3
   bluetooth_events:
     git:
       url: git://github.com/GeorgopoulosGiannis/bluetooth_events.git
@@ -86,8 +87,7 @@ flutter:
   assets:
     - assets/car_icon.png
     - assets/rive/gps.riv
-    - assets/rive/car.riv
-    - assets/rive/map.riv
+    #- assets/rive/map.riv
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

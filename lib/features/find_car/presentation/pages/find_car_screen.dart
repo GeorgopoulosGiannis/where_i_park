@@ -38,7 +38,7 @@ class _FindCarScreenState extends State<FindCarScreen> {
                     tag: 'car_icon',
                     child: HomeItemIconContainer(
                       child: Icon(
-                        Icons.directions_car_filled_rounded,
+                        Icons.map_rounded,
                         color: theme.colorScheme.onPrimary,
                         size: 65,
                       ),
@@ -64,19 +64,10 @@ class _FindCarScreenState extends State<FindCarScreen> {
                       ),
                     ),
                     Flexible(
-                      child: ListView(
-                        physics: const BouncingScrollPhysics(),
-                        scrollDirection: Axis.horizontal,
-                        children: [
-                          MapLocationCard(
-                            location: state.location,
-                          ),
-                          MapLocationCard(
-                            location: state.location,
-                          ),
-                        ],
+                      child: MapLocationCard(
+                        location: state.location,
                       ),
-                    )
+                    ),
                   ],
                 );
               }

@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:geocoding/geocoding.dart';
+
 import 'package:geolocator/geolocator.dart';
 import 'package:injectable/injectable.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -8,7 +8,7 @@ import 'package:app_settings/app_settings.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:where_i_park/core/data/models/bluetooth_device_model.dart';
 import 'package:where_i_park/core/data/models/car_location_model.dart';
-import 'package:where_i_park/core/domain/entities/bluetooth_device.dart';
+import 'package:where_i_park/features/add_device/domain/entities/bluetooth_device.dart';
 import 'package:where_i_park/core/domain/entities/car_location.dart';
 
 class _Constants {

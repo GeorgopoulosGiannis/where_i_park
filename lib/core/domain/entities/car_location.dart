@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:geolocator/geolocator.dart';
 
-import 'bluetooth_device.dart';
+import '../../../features/add_device/domain/entities/bluetooth_device.dart';
 
 /// CarLocation contains all the information about a saved location
 class CarLocation extends Equatable {

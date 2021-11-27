@@ -1,5 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:where_i_park/core/domain/entities/bluetooth_device.dart';
+import 'package:where_i_park/features/add_device/domain/entities/bluetooth_device.dart';
 
 part 'bluetooth_device_model.g.dart';
 
