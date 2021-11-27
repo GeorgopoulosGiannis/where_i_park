@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-//import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:wakelock/wakelock.dart';
 import 'package:where_i_park/features/home/presentation/bloc/home_bloc.dart';
@@ -18,8 +18,8 @@ void main() async {
     await Wakelock.enable();
     await configureDependencies();
     await BluetoothManager.init();
-    // final prefs= await SharedPreferences.getInstance();
-    // await prefs.clear();
+    final prefs= await SharedPreferences.getInstance();
+    await prefs.clear();
     runApp(const MyApp());
   });
 }
@@ -42,9 +42,11 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'Where did i park?',
         theme: ThemeData.from(
-          colorScheme: const ColorScheme.light(
-            primary: Color.fromRGBO(100, 156, 166, 1),
-            secondary:Color.fromRGBO(172, 196, 204, 1)
+          colorScheme: ColorScheme.light(
+            primary: Colors.blue,//Color.fromRGBO(100, 156, 166, 1),
+            secondary:Colors.blue[200]!,//  Color.fromRGBO(172, 196, 204, 1)
+            surface: Colors.grey[300]!
+
           ),
         ),
         home: const SafeArea(

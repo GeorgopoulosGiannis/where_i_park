@@ -94,10 +94,27 @@ class _HomeScreenState extends State<HomeScreen> {
                   subtitle: 'Car',
                   icon: Hero(
                     tag: 'car_icon',
-                    child: Icon(
-                      Icons.map_rounded,
-                      color: theme.colorScheme.onPrimary,
-                      size: 65,
+                    child: BlocBuilder<HomeBloc, HomeState>(
+                      builder: (context, state) {
+                        return Stack(
+                          fit: StackFit.expand,
+                          alignment: Alignment.center,
+                          children: [
+                            RiveAnimation.asset(
+                              'assets/rive/gps.riv',
+                              controllers: [_riveController],
+                              fit: BoxFit.contain,
+                            ),
+                            if (state is GettingLocation)
+                              const SizedBox(
+                                height: 100,
+                                child: CircularProgressIndicator(
+                                  color: Colors.white,
+                                ),
+                              ),
+                          ],
+                        );
+                      },
                     ),
                   ),
                   onTap: () {
@@ -127,7 +144,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     size: 65,
                   ),
                   onTap: () {
-                        Navigator.of(context).push(
+                    Navigator.of(context).push(
                       CupertinoPageRoute(
                         builder: (context) {
                           return const AddDeviceScreen();
@@ -147,27 +164,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: HomeItem(
                   title: 'Save',
                   subtitle: 'Position',
-                  icon: BlocBuilder<HomeBloc, HomeState>(
-                    builder: (context, state) {
-                      return Stack(
-                        fit: StackFit.expand,
-                        alignment: Alignment.center,
-                        children: [
-                          RiveAnimation.asset(
-                            'assets/rive/gps.riv',
-                            controllers: [_riveController],
-                            fit: BoxFit.contain,
-                          ),
-                          if (state is GettingLocation)
-                            const SizedBox(
-                              height: 100,
-                              child: CircularProgressIndicator(
-                                color: Colors.white,
-                              ),
-                            ),
-                        ],
-                      );
-                    },
+                  icon: Icon(
+                    Icons.check_circle_outline_rounded,
+                    color: theme.colorScheme.onPrimary,
+                    size: 65,
                   ),
                   onTap: () {
                     context.read<HomeBloc>().add(const SaveLocationEvent());

@@ -13,46 +13,28 @@ class PairedDeviceList extends StatelessWidget {
     return BlocBuilder<AddDeviceBloc, AddDeviceState>(
       builder: (context, state) {
         final devices = state.devices;
-        return ListView.builder(
-          itemCount: devices.length,
-          itemBuilder: (context, index) {
-            final theme = Theme.of(context);
-            final dev = devices[index];
-            bool tracking = false;
-            for (var d in state.alreadyAddedDevices) {
-              if (d.address == dev.address) {
-                tracking = true;
+        return Container(
+          padding: EdgeInsets.all(8.0),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: ListView.separated(
+            shrinkWrap: true,
+            separatorBuilder: (context, index) => const Divider(
+              thickness: 1,
+            ),
+            itemCount: devices.length,
+            itemBuilder: (context, index) {
+              final dev = devices[index];
+              bool tracking = false;
+              for (var d in state.alreadyAddedDevices) {
+                if (d.address == dev.address) {
+                  tracking = true;
+                }
               }
-            }
-            final isConnected = state.connectedDeviceAddress == dev.address;
-            return Card(
-              child: ListTile(
-                tileColor: tracking ? Colors.grey : theme.colorScheme.secondary,
-                leading: tracking
-                    ? const Icon(
-                        Icons.remove_red_eye,
-                      )
-                    : null,
-                title: Text(
-                  dev.name,
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Theme.of(context).colorScheme.onPrimary,
-                  ),
-                ),
-                subtitle: Text(
-                  dev.address,
-                  style: TextStyle(
-                    color: Theme.of(context).colorScheme.onPrimary,
-                  ),
-                ),
-                trailing: isConnected
-                    ? const Icon(
-                        Icons.bluetooth_connected_sharp,
-                        color: Colors.green,
-                      )
-                    : null,
+              final isConnected = state.connectedDeviceAddress == dev.address;
+              return GestureDetector(
                 onTap: tracking
                     ? null
                     : () {
@@ -60,9 +42,42 @@ class PairedDeviceList extends StatelessWidget {
                             .read<AddDeviceBloc>()
                             .add(TrackDeviceEvent(dev));
                       },
-              ),
-            );
-          },
+                child: Container(
+                  padding: EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(5),
+                    color: tracking
+                        ? Theme.of(context).colorScheme.secondary
+                        : null,
+                  ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        flex: 2,
+                        child: Text(
+                          dev.name,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            //color: Theme.of(context).colorScheme.onPrimary,
+                          ),
+                        ),
+                      ),
+                      Flexible(
+                        child:  Text(
+                          isConnected ? 'Connected' : 'Not Connected',
+                          style: const TextStyle(
+                            fontSize: 17
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
         );
       },
     );

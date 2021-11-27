@@ -25,7 +25,28 @@ class AddDeviceScreen extends StatelessWidget {
       child: SafeArea(
         child: Scaffold(
           appBar: AppBar(),
-          body: const PairedDeviceList(),
+          backgroundColor: Theme.of(context).colorScheme.surface,
+          body: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: const [
+              Padding(
+                padding: EdgeInsets.only(
+                  left:15.0,
+                  top: 8,
+                ),
+                child: Text(
+                  'My devices',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.all(8.0),
+                child: PairedDeviceList(),
+              ),
+            ],
+          ),
         ),
       ),
     );
