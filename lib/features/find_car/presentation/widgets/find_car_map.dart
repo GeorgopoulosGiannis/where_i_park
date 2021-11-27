@@ -54,7 +54,8 @@ class _FindCarMapState extends State<FindCarMap> {
   }
 
   Future<void> loadIcon() async {
-    icon =BitmapDescriptor.fromBytes( await getBytesFromAsset('assets/car_icon.png', 200));
+    icon = BitmapDescriptor.fromBytes(
+        await getBytesFromAsset('assets/car_icon.png', 200));
     setState(() {});
   }
 

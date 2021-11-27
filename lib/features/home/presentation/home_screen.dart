@@ -10,6 +10,7 @@ import 'package:where_i_park/features/home/presentation/widgets/home_item.dart';
 import 'package:where_i_park/services/notification_manager.dart';
 
 import 'bloc/home_bloc.dart';
+import 'widgets/home_item_icon_container.dart';
 
 const verticalPadding = 0.0;
 const horizontalPadding = 15.0;
@@ -91,16 +92,12 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: HomeItem(
                   title: 'Find',
                   subtitle: 'Car',
-                  icon: Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: SizedBox(
-                      height: 80,
-                      width: 80,
-                      child: Icon(
-                        Icons.directions_car_filled_rounded,
-                        color: theme.colorScheme.onPrimary,
-                        size: 65,
-                      ),
+                  icon: Hero(
+                    tag: 'car_icon',
+                    child: Icon(
+                      Icons.directions_car_filled_rounded,
+                      color: theme.colorScheme.onPrimary,
+                      size: 65,
                     ),
                   ),
                   onTap: () {
@@ -124,17 +121,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: HomeItem(
                   title: 'Add',
                   subtitle: 'Bluetooth',
-                  icon: Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: SizedBox(
-                      height: 80,
-                      width: 80,
-                      child: Icon(
-                        Icons.bluetooth,
-                        color: theme.colorScheme.onPrimary,
-                        size: 65,
-                      ),
-                    ),
+                  icon: Icon(
+                    Icons.bluetooth,
+                    color: theme.colorScheme.onPrimary,
+                    size: 65,
                   ),
                   onTap: () {},
                 ),
@@ -154,25 +144,14 @@ class _HomeScreenState extends State<HomeScreen> {
                       return Stack(
                         alignment: Alignment.center,
                         children: [
-                          Padding(
-                            padding: const EdgeInsets.all(12.0),
-                            child: SizedBox(
-                              height: 80,
-                              width: 80,
-                              child: RiveAnimation.asset(
-                                'assets/rive/gps.riv',
-                                controllers: [_riveController],
-                                fit: BoxFit.contain,
-                              ),
-                            ),
+                          RiveAnimation.asset(
+                            'assets/rive/gps.riv',
+                            controllers: [_riveController],
+                            fit: BoxFit.contain,
                           ),
                           if (state is GettingLocation)
-                            const SizedBox(
-                              height: 100,
-                              width: 100,
-                              child: CircularProgressIndicator(
-                                color: Colors.white,
-                              ),
+                            const CircularProgressIndicator(
+                              color: Colors.white,
                             ),
                         ],
                       );

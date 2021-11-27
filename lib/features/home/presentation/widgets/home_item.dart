@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:where_i_park/features/home/presentation/widgets/home_item_icon_container.dart';
 
 class HomeItem extends StatelessWidget {
   final String title;
@@ -37,6 +38,12 @@ class HomeItem extends StatelessWidget {
           child: Stack(
             children: [
               Align(
+                alignment: Alignment.topCenter,
+                child: HomeItemIconContainer(
+                  child: icon,
+                ),
+              ),
+              Align(
                 alignment: Alignment.bottomCenter,
                 child: Container(
                   margin: const EdgeInsets.only(
@@ -66,22 +73,6 @@ class HomeItem extends StatelessWidget {
                         )
                       ],
                     ),
-                  ),
-                ),
-              ),
-              Align(
-                alignment: Alignment.topCenter,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 20.0,
-                    horizontal: 20,
-                  ),
-                  child: DecoratedBox(
-                    decoration: BoxDecoration(
-                      color: theme.colorScheme.primary,
-                      shape: BoxShape.circle,
-                    ),
-                    child: icon,
                   ),
                 ),
               ),
