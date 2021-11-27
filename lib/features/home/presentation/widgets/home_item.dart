@@ -39,9 +39,13 @@ class HomeItem extends StatelessWidget {
               Align(
                 alignment: Alignment.bottomCenter,
                 child: Container(
-                  margin:const EdgeInsets.only(top: 10),
+                  margin: const EdgeInsets.only(
+                    top: 10,
+                  ),
                   padding: const EdgeInsets.symmetric(
-                      vertical: 18.0, horizontal: 30),
+                    vertical: 18.0,
+                    horizontal: 30,
+                  ),
                   child: Text.rich(
                     TextSpan(
                       children: [
@@ -73,14 +77,11 @@ class HomeItem extends StatelessWidget {
                     horizontal: 20,
                   ),
                   child: DecoratedBox(
-                    decoration:  BoxDecoration(
+                    decoration: BoxDecoration(
                       color: theme.colorScheme.primary,
                       shape: BoxShape.circle,
                     ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(12.0),
-                      child: icon,
-                    ),
+                    child: icon,
                   ),
                 ),
               ),

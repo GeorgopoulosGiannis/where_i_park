@@ -22,12 +22,10 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final _riveController = SimpleAnimation('active');
-  final _riveCarController = SimpleAnimation('active');
+  final _riveController = SimpleAnimation('active')..isActive = true;
+
   @override
   void initState() {
-    _riveController.isActive = true;
-    _riveCarController.isActive = true;
     checkLocalNotification();
     super.initState();
   }
@@ -69,7 +67,21 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Scaffold(
         body: Column(
           children: [
-            const SizedBox(height: 30),
+            Align(
+              alignment: Alignment.centerRight,
+              child: Padding(
+                  padding: const EdgeInsets.only(
+                    right: 15.0,
+                  ),
+                  child: IconButton(
+                    onPressed: () {},
+                    icon: Icon(
+                      Icons.menu,
+                      color: theme.colorScheme.primary,
+                      size: 40,
+                    ),
+                  )),
+            ),
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.symmetric(
@@ -79,13 +91,16 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: HomeItem(
                   title: 'Find',
                   subtitle: 'Car',
-                  icon: SizedBox(
-                    height: 80,
-                    width: 80,
-                    child: Icon(
-                      Icons.directions_car_filled_rounded,
-                      color: theme.colorScheme.onPrimary,
-                      size: 65,
+                  icon: Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: SizedBox(
+                      height: 80,
+                      width: 80,
+                      child: Icon(
+                        Icons.directions_car_filled_rounded,
+                        color: theme.colorScheme.onPrimary,
+                        size: 65,
+                      ),
                     ),
                   ),
                   onTap: () {
@@ -109,13 +124,16 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: HomeItem(
                   title: 'Add',
                   subtitle: 'Bluetooth',
-                  icon:  SizedBox(
-                    height: 80,
-                    width: 80,
-                    child: Icon(
-                      Icons.bluetooth,
-                      color: theme.colorScheme.onPrimary,
-                      size: 65,
+                  icon: Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: SizedBox(
+                      height: 80,
+                      width: 80,
+                      child: Icon(
+                        Icons.bluetooth,
+                        color: theme.colorScheme.onPrimary,
+                        size: 65,
+                      ),
                     ),
                   ),
                   onTap: () {},
@@ -131,14 +149,34 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: HomeItem(
                   title: 'Save',
                   subtitle: 'Position',
-                  icon: SizedBox(
-                    height: 80,
-                    width: 80,
-                    child: RiveAnimation.asset(
-                      'assets/rive/gps.riv',
-                      controllers: [_riveController],
-                      fit: BoxFit.contain,
-                    ),
+                  icon: BlocBuilder<HomeBloc, HomeState>(
+                    builder: (context, state) {
+                      return Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(12.0),
+                            child: SizedBox(
+                              height: 80,
+                              width: 80,
+                              child: RiveAnimation.asset(
+                                'assets/rive/gps.riv',
+                                controllers: [_riveController],
+                                fit: BoxFit.contain,
+                              ),
+                            ),
+                          ),
+                          if (state is GettingLocation)
+                            const SizedBox(
+                              height: 100,
+                              width: 100,
+                              child: CircularProgressIndicator(
+                                color: Colors.white,
+                              ),
+                            ),
+                        ],
+                      );
+                    },
                   ),
                   onTap: () {
                     context.read<HomeBloc>().add(const SaveLocationEvent());
@@ -149,11 +187,6 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
-        floatingActionButton: Icon(
-          Icons.menu,
-          color: theme.colorScheme.primary,
-          size: 40,
-        ),
       ),
     );
   }
