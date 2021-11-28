@@ -18,6 +18,6 @@ CarLocationModel _$CarLocationModelFromJson(Map<String, dynamic> json) =>
 
 Map<String, dynamic> _$CarLocationModelToJson(CarLocationModel instance) =>
     <String, dynamic>{
-      'deviceModel': instance.deviceModel,
+      'deviceModel': instance.deviceModel?.toJson(),
       'positionModel': const PositionConverter().toJson(instance.positionModel),
     };

@@ -6,6 +6,10 @@ import 'package:injectable/injectable.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:where_i_park/core/constants.dart';
+import 'package:where_i_park/core/data/models/bluetooth_device_model.dart';
+import 'package:where_i_park/services/injector.dart';
+import 'package:where_i_park/services/location_manager.dart';
+import 'package:where_i_park/services/storage_manager.dart';
 
 abstract class _Constants {
   static const connectedEvent = 'android.bluetooth.device.action.ACL_CONNECTED';
@@ -17,6 +21,8 @@ abstract class _Constants {
 class BluetoothManager {
   final connectedDeviceSubject = BehaviorSubject.seeded('');
 
+  //#region Foreground
+  static const bluetoothNotifierChannel = MethodChannel('BLUETOOTH_NOTIFIER');
   BluetoothManager() {
     bluetoothNotifierChannel.setMethodCallHandler(
       (call) async {
@@ -36,7 +42,9 @@ class BluetoothManager {
     connectedDeviceSubject.add(' ');
   }
 
-  static const bluetoothNotifierChannel = MethodChannel('BLUETOOTH_NOTIFIER');
+  //#endregion
+
+  //#region Background
 
   static Future<void> init() async {
     await BluetoothEvents.initialize();
@@ -57,32 +65,34 @@ class BluetoothManager {
   }
 
   static Future<void> _handleDeviceConnectedBackground(String address) async {
-    final _prefs = await SharedPreferences.getInstance();
-    await _prefs.setString(Constants.connectedDevice, address);
+    final isRegistered = sl.isRegistered<StorageManager>();
+    if (!isRegistered) {
+      await configureDependencies();
+    }
+    final storage = sl<StorageManager>();
+    await storage.setConnected(address);
   }
 
   static Future<void> _handleDeviceDisconnectedBackground(
-      String address) async {
-    final _prefs = await SharedPreferences.getInstance();
-    await _prefs.reload();
-    await _prefs.remove(Constants.connectedDevice);
+    String address,
+  ) async {
+    final isRegistered = sl.isRegistered<StorageManager>();
+    if (!isRegistered) {
+      await configureDependencies();
+    }
+    final storage = sl<StorageManager>();
+    await storage.removeConnected();
 
-    // if (!isRegistered) {
-    //   await configureDependencies();
-    // }
-
-    // if (savedCar == null) {
-    //   return;
-    // }
-    // if (savedCar.tracking == TrackMethod.automatic) {
-    //   //await sl<LocationManager>().saveCarLocation(savedCar);
-    // } else {
-    //   await NotificationManager.initialize();
-    //   NotificationManager.showNotification(
-    //     id: 123,
-    //     title: 'Tap to save location!!',
-    //     body: savedCar.name,
-    //     payload: json.encode((savedCar as CarModel).toJson()),
-    //   );
+    final tracking = storage.getTrackingDevices();
+    BluetoothDeviceModel? saved;
+    for (var d in tracking) {
+      if (d.address == address) {
+        saved = d;
+      }
+    }
+    if (saved == null) {
+      return;
+    }
+    await sl<LocationManager>().saveCurrentLocation(device: saved);
   }
 }

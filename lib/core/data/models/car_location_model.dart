@@ -6,7 +6,7 @@ import 'bluetooth_device_model.dart';
 
 part 'car_location_model.g.dart';
 
-@JsonSerializable()
+@JsonSerializable(explicitToJson:true)
 class CarLocationModel extends CarLocation {
   final BluetoothDeviceModel? deviceModel;
 

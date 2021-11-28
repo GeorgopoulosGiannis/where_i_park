@@ -42,6 +42,8 @@ class _MapLocationCardState extends State<MapLocationCard> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
+          if(widget.location!.device != null)
+            Text(widget.location!.device!.name),
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Text(

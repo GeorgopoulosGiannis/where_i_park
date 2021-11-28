@@ -1,3 +1,4 @@
+import 'dart:developer' as developer;
 import 'dart:convert';
 
 
@@ -50,9 +51,10 @@ class LocationManager {
       );
       return await _prefs.setString(
         _Constants.lastLocation,
-        json.encode(loc),
+        json.encode(loc.toJson()),
       );
     } catch (e) {
+      developer.log(e.toString());
       return false;
     }
   }

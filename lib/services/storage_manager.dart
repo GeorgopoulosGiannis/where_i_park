@@ -8,6 +8,7 @@ import 'package:where_i_park/features/add_device/domain/entities/bluetooth_devic
 
 abstract class _Constants {
   static const trackingDevicesKey = 'TRACKING_DEVICES';
+  static const connectedDevice = 'CONNECTED_DEVICE';
 }
 
 @singleton
@@ -29,6 +30,7 @@ class StorageManager {
       return [];
     }
   }
+  
 
   Future<bool> addDeviceForTracking(BluetoothDevice dev) async {
     try {
@@ -84,5 +86,15 @@ class StorageManager {
       developer.log(e.toString());
       return false;
     }
+  }
+
+  Future<void> setConnected(String address) async {
+    await _prefs.reload();
+    await _prefs.setString(_Constants.connectedDevice, address);
+  }
+
+  Future<void> removeConnected() async {
+    await _prefs.reload();
+    await _prefs.remove(_Constants.connectedDevice);
   }
 }

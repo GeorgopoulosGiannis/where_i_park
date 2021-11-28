@@ -18,8 +18,8 @@ void main() async {
     await Wakelock.enable();
     await configureDependencies();
     await BluetoothManager.init();
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.clear();
+    // final prefs = await SharedPreferences.getInstance();
+    // await prefs.clear();
     runApp(const MyApp());
   });
 }

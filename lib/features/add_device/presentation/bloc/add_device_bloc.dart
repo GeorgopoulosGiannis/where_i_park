@@ -116,6 +116,7 @@ class AddDeviceBloc extends Bloc<AddDeviceEvent, AddDeviceState> {
     TrackDeviceEvent event,
     Emitter<AddDeviceState> emit,
   ) async {
+    
     final added = await addTrackingDevice(event.device);
     add(LoadTrackingDevicesEvent());
   }
