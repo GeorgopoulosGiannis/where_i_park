@@ -1,6 +1,6 @@
 part of 'find_car_bloc.dart';
 
-enum FindCarStatus { loading, loaded, error }
+enum FindCarStatus { loading, loaded, noLocation, error }
 
 class FindCarState extends Equatable {
   final FindCarStatus status;
@@ -39,6 +39,4 @@ class FindCarState extends Equatable {
         currentPosition,
         message,
       ];
-
-
 }

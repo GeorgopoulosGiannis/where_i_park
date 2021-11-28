@@ -57,15 +57,25 @@ class FindCarBloc extends Bloc<FindCarEvent, FindCarState> {
     final location = await getLastLocation();
     final currentPosition = await getCurrentLocation();
     double distance = 0.0;
-    if (location != null) {
-      distance = distanceInKmBetweenEarthCoordinates(
-        LatLng(currentPosition.latitude, currentPosition.longitude),
-        LatLng(
-          location.position.latitude,
-          location.position.longitude,
+    if (location == null) {
+      emit(
+        state.copyWith(
+          status: FindCarStatus.noLocation,
+          currentPosition: currentPosition,
         ),
       );
+      return;
     }
+    distance = distanceInKmBetweenEarthCoordinates(
+      LatLng(
+        currentPosition.latitude,
+        currentPosition.longitude,
+      ),
+      LatLng(
+        location.position.latitude,
+        location.position.longitude,
+      ),
+    );
     emit(state.copyWith(
       status: FindCarStatus.loaded,
       currentPosition: currentPosition,
@@ -102,7 +112,7 @@ class FindCarBloc extends Bloc<FindCarEvent, FindCarState> {
     final distanceInKM = distanceInKmBetweenEarthCoordinates(latLng1, latLng2);
     final distanceAsString = distanceInKM < 1
         ? '${fromKMtoMeters(distanceInKM).toStringAsFixed(2)}m'
-        :'${distanceInKM.toStringAsFixed(2)}Km';
+        : '${distanceInKM.toStringAsFixed(2)}Km';
 
     return distanceAsString;
   }

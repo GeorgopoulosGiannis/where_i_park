@@ -18,7 +18,7 @@ void main() async {
     await Wakelock.enable();
     await configureDependencies();
     await BluetoothManager.init();
-    final prefs= await SharedPreferences.getInstance();
+    final prefs = await SharedPreferences.getInstance();
     await prefs.clear();
     runApp(const MyApp());
   });
@@ -43,11 +43,11 @@ class MyApp extends StatelessWidget {
         title: 'Where did i park?',
         theme: ThemeData.from(
           colorScheme: ColorScheme.light(
-            primary: Colors.blue,//Color.fromRGBO(100, 156, 166, 1),
-            secondary:Colors.blue[200]!,//  Color.fromRGBO(172, 196, 204, 1)
-            surface: Colors.grey[300]!
-
-          ),
+              primary: Colors.blue, //Color.fromRGBO(100, 156, 166, 1),
+              secondary: Colors.blue[200]!, //  Color.fromRGBO(172, 196, 204, 1)
+        ),
+        ).copyWith(
+          scaffoldBackgroundColor: Colors.grey[300]!,
         ),
         home: const SafeArea(
           child: HomeScreen(),

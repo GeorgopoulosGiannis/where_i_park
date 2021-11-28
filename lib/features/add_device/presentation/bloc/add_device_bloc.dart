@@ -4,6 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:injectable/injectable.dart';
 import 'package:where_i_park/features/add_device/domain/usecases/add_tracking_device.dart';
+import 'package:where_i_park/features/add_device/domain/usecases/remove_tracking_device.dart';
 import '../../domain/entities/bluetooth_device.dart';
 import '../../domain/usecases/get_connected_device_subject.dart';
 import '../../domain/usecases/load_devices.dart';
@@ -18,6 +19,7 @@ class AddDeviceBloc extends Bloc<AddDeviceEvent, AddDeviceState> {
   final LoadTrackingDevices loadTrackingDevices;
   final GetConnectedDeviceSubject getConnectedDeviceSubject;
   final AddTrackingDevice addTrackingDevice;
+  final RemoveTrackingDevice removeTrackingDevice;
 
   StreamSubscription<String?>? _subscription;
 
@@ -26,6 +28,7 @@ class AddDeviceBloc extends Bloc<AddDeviceEvent, AddDeviceState> {
     this.loadDevices,
     this.loadTrackingDevices,
     this.getConnectedDeviceSubject,
+    this.removeTrackingDevice,
   ) : super(const AddDeviceState()) {
     _registerEvents();
   }
@@ -41,19 +44,27 @@ class AddDeviceBloc extends Bloc<AddDeviceEvent, AddDeviceState> {
     on<StartTrackingConnectedEvent>(_onStartTrackingConnectedEvent);
     on<NewDeviceConnectionEvent>(_onNewDeviceConnectionEvent);
     on<TrackDeviceEvent>(_onTrackDeviceEvent);
+    on<RemoveTrackDeviceEvent>(_onRemoveTrackDeviceEvent);
   }
 
   FutureOr<void> _onLoadDevicesEvent(
     LoadDevicesEvent event,
     Emitter<AddDeviceState> emit,
   ) async {
-    var devices = await loadDevices();
-    if(state.alreadyAddedDevices.isNotEmpty){
-      devices = _reorderDevices(devices, state.alreadyAddedDevices);
+    var allDevices = await loadDevices();
+    var notTrackingDevices = <BluetoothDevice>[];
+    if (state.alreadyAddedDevices.isNotEmpty) {
+      notTrackingDevices = _getNonTracking(
+        allDevices,
+        state.alreadyAddedDevices,
+      );
+    } else {
+      notTrackingDevices = allDevices;
     }
     emit(
       state.copyWith(
-        devices: devices,
+        devices: allDevices,
+        devicesNotTracked: notTrackingDevices,
       ),
     );
   }
@@ -62,15 +73,19 @@ class AddDeviceBloc extends Bloc<AddDeviceEvent, AddDeviceState> {
     LoadTrackingDevicesEvent event,
     Emitter<AddDeviceState> emit,
   ) async {
+    final allDevices = state.devices;
     final trackingDevices = await loadTrackingDevices();
-    var allDevices = state.devices;
+    var nonTracking = <BluetoothDevice>[];
     if (allDevices.isNotEmpty) {
-      allDevices = _reorderDevices(allDevices, trackingDevices);
+      nonTracking = _getNonTracking(allDevices, trackingDevices);
+    } else {
+      nonTracking = [];
     }
     emit(
       state.copyWith(
         alreadyAddedDevices: trackingDevices,
         devices: allDevices,
+        devicesNotTracked: nonTracking,
       ),
     );
   }
@@ -105,7 +120,7 @@ class AddDeviceBloc extends Bloc<AddDeviceEvent, AddDeviceState> {
     add(LoadTrackingDevicesEvent());
   }
 
-  List<BluetoothDevice> _reorderDevices(
+  List<BluetoothDevice> _getNonTracking(
     List<BluetoothDevice> all,
     List<BluetoothDevice> tracking,
   ) {
@@ -115,9 +130,18 @@ class AddDeviceBloc extends Bloc<AddDeviceEvent, AddDeviceState> {
       if (tracking.any((element) => element.address == d.address)) {
         isTracking = true;
       }
-
-      result.insert(isTracking ? 0 : result.length, d);
+      if (!isTracking) {
+        result.add(d);
+      }
     }
     return result;
+  }
+
+  FutureOr<void> _onRemoveTrackDeviceEvent(
+    RemoveTrackDeviceEvent event,
+    Emitter<AddDeviceState> emit,
+  ) async {
+    final removed = await removeTrackingDevice(event.device);
+    add(LoadTrackingDevicesEvent());
   }
 }

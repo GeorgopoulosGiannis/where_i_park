@@ -24,3 +24,9 @@ class TrackDeviceEvent extends AddDeviceEvent {
 
   const TrackDeviceEvent(this.device);
 }
+
+class RemoveTrackDeviceEvent extends AddDeviceEvent {
+  final BluetoothDevice device;
+
+  const RemoveTrackDeviceEvent(this.device);
+}

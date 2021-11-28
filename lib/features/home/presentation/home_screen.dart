@@ -93,28 +93,11 @@ class _HomeScreenState extends State<HomeScreen> {
                   title: 'Find',
                   subtitle: 'Car',
                   icon: Hero(
-                    tag: 'car_icon',
-                    child: BlocBuilder<HomeBloc, HomeState>(
-                      builder: (context, state) {
-                        return Stack(
-                          fit: StackFit.expand,
-                          alignment: Alignment.center,
-                          children: [
-                            RiveAnimation.asset(
-                              'assets/rive/gps.riv',
-                              controllers: [_riveController],
-                              fit: BoxFit.contain,
-                            ),
-                            if (state is GettingLocation)
-                              const SizedBox(
-                                height: 100,
-                                child: CircularProgressIndicator(
-                                  color: Colors.white,
-                                ),
-                              ),
-                          ],
-                        );
-                      },
+                    tag: 'gps_icon',
+                    child: RiveAnimation.asset(
+                      'assets/rive/gps.riv',
+                      controllers: [_riveController],
+                      fit: BoxFit.contain,
                     ),
                   ),
                   onTap: () {
@@ -135,23 +118,26 @@ class _HomeScreenState extends State<HomeScreen> {
                   horizontal: horizontalPadding,
                   vertical: verticalPadding,
                 ),
-                child: HomeItem(
-                  title: 'Add',
-                  subtitle: 'Bluetooth',
-                  icon: Icon(
-                    Icons.bluetooth_drive,
-                    color: theme.colorScheme.onPrimary,
-                    size: 65,
+                child: Hero(
+                  tag: 'bluetooth_icon',
+                  child: HomeItem(
+                    title: 'Add',
+                    subtitle: 'Bluetooth',
+                    icon: Icon(
+                      Icons.bluetooth_drive,
+                      color: theme.colorScheme.onPrimary,
+                      size: 65,
+                    ),
+                    onTap: () {
+                      Navigator.of(context).push(
+                        CupertinoPageRoute(
+                          builder: (context) {
+                            return const AddDeviceScreen();
+                          },
+                        ),
+                      );
+                    },
                   ),
-                  onTap: () {
-                    Navigator.of(context).push(
-                      CupertinoPageRoute(
-                        builder: (context) {
-                          return const AddDeviceScreen();
-                        },
-                      ),
-                    );
-                  },
                 ),
               ),
             ),
@@ -164,10 +150,28 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: HomeItem(
                   title: 'Save',
                   subtitle: 'Position',
-                  icon: Icon(
-                    Icons.check_circle_outline_rounded,
-                    color: theme.colorScheme.onPrimary,
-                    size: 65,
+                  icon: BlocBuilder<HomeBloc, HomeState>(
+                    builder: (context, state) {
+                      return Stack(
+                        fit: StackFit.expand,
+                        alignment: Alignment.center,
+                        children: [
+                          if (state is! GettingLocation)
+                            Icon(
+                              Icons.touch_app,
+                              color: theme.colorScheme.onPrimary,
+                              size: 65,
+                            ),
+                          if (state is GettingLocation)
+                            const SizedBox(
+                              height: 100,
+                              child: CircularProgressIndicator(
+                                color: Colors.white,
+                              ),
+                            ),
+                        ],
+                      );
+                    },
                   ),
                   onTap: () {
                     context.read<HomeBloc>().add(const SaveLocationEvent());

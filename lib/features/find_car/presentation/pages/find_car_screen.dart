@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:rive/rive.dart';
 
 import 'package:where_i_park/features/find_car/presentation/bloc/find_car_bloc.dart';
 import 'package:where_i_park/features/find_car/presentation/widgets/find_car_map.dart';
@@ -21,7 +22,6 @@ class FindCarScreen extends StatefulWidget {
 class _FindCarScreenState extends State<FindCarScreen> {
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     return BlocProvider<FindCarBloc>(
       create: (context) => sl<FindCarBloc>()
         ..add(
@@ -33,14 +33,13 @@ class _FindCarScreenState extends State<FindCarScreen> {
           body: BlocBuilder<FindCarBloc, FindCarState>(
             builder: (context, state) {
               if (state.status == _S.loading) {
-                return Center(
+                return const Center(
                   child: Hero(
-                    tag: 'car_icon',
+                    tag: 'gps_icon',
                     child: HomeItemIconContainer(
-                      child: Icon(
-                        Icons.map_rounded,
-                        color: theme.colorScheme.onPrimary,
-                        size: 65,
+                      child: RiveAnimation.asset(
+                        'assets/rive/gps.riv',
+                        fit: BoxFit.contain,
                       ),
                     ),
                   ),
@@ -51,7 +50,17 @@ class _FindCarScreenState extends State<FindCarScreen> {
                   child: Text(state.message),
                 );
               }
-
+              if (state.status == _S.noLocation) {
+                return const Center(
+                  child: Text(
+                    'No location has been saved yet :(',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
+                    ),
+                  ),
+                );
+              }
               if (state.status == _S.loaded) {
                 return Column(
                   children: [
@@ -63,11 +72,12 @@ class _FindCarScreenState extends State<FindCarScreen> {
                         ],
                       ),
                     ),
-                    Flexible(
-                      child: MapLocationCard(
-                        location: state.location,
+                    if (state.location != null)
+                      Flexible(
+                        child: MapLocationCard(
+                          location: state.location,
+                        ),
                       ),
-                    ),
                   ],
                 );
               }

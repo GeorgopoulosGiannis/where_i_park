@@ -57,4 +57,32 @@ class StorageManager {
       return false;
     }
   }
+
+  Future<bool> removeDeviceFromTracking(BluetoothDevice dev) async {
+    try {
+      final trackingDevices = getTrackingDevices();
+      var index = trackingDevices.indexWhere(
+        (d) => d.address == dev.address,
+      );
+      if (index == -1) {
+        return false;
+      }
+      trackingDevices.removeAt(index);
+      return await _prefs.setString(
+        _Constants.trackingDevicesKey,
+        json.encode(
+          trackingDevices
+              .map(
+                (e) => e.toJson(),
+              )
+              .toList(
+                growable: false,
+              ),
+        ),
+      );
+    } catch (e) {
+      developer.log(e.toString());
+      return false;
+    }
+  }
 }
