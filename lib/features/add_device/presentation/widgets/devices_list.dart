@@ -24,6 +24,7 @@ class DevicesList extends StatelessWidget {
         ),
         itemCount: devices.length,
         itemBuilder: (context, index) {
+          final theme = Theme.of(context);
           final dev = devices[index];
           final isConnected =
               context.watch<AddDeviceBloc>().state.connectedDeviceAddress ==
@@ -35,23 +36,20 @@ class DevicesList extends StatelessWidget {
               child: Row(
                 children: [
                   Expanded(
-                    flex: 2,
                     child: Text(
                       dev.name,
                       overflow: TextOverflow.ellipsis,
                       maxLines: 2,
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style: theme.textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold,)
                     ),
                   ),
-                  Flexible(
-                    child: Text(
-                      isConnected ? 'Connected' : 'Not Connected',
-                      style: const TextStyle(fontSize: 17),
-                    ),
-                  )
+                  const SizedBox(
+                    width: 5,
+                  ),
+                  Text(
+                    isConnected ? 'Connected' : 'Not Connected',
+                    style:theme.textTheme.bodyText1,
+                  ),
                 ],
               ),
             ),

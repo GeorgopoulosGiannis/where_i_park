@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 
 class HomeItemIconContainer extends StatelessWidget {
   final Widget child;
+  final Color? color;
   const HomeItemIconContainer({
     Key? key,
     required this.child,
+    this.color,
   }) : super(key: key);
 
   @override
@@ -17,7 +19,7 @@ class HomeItemIconContainer extends StatelessWidget {
       ),
       child: DecoratedBox(
         decoration: BoxDecoration(
-          color: theme.colorScheme.primary,
+          color: color ?? theme.colorScheme.primaryVariant,
           shape: BoxShape.circle,
         ),
         child: Padding(

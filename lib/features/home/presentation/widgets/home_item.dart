@@ -30,7 +30,7 @@ class HomeItem extends StatelessWidget {
               spreadRadius: 2,
             ),
           ],
-          color: theme.colorScheme.secondary,
+          color: theme.colorScheme.primary,
           borderRadius: BorderRadius.circular(10.0),
         ),
         child: InkWell(
@@ -67,7 +67,7 @@ class HomeItem extends StatelessWidget {
                         TextSpan(
                           text: subtitle,
                           style: theme.textTheme.headline4?.copyWith(
-                            color: theme.colorScheme.primary,
+                            color: theme.colorScheme.primaryVariant,
                             fontWeight: FontWeight.bold,
                           ),
                         )

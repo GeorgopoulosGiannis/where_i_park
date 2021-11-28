@@ -51,13 +51,11 @@ class _FindCarScreenState extends State<FindCarScreen> {
                 );
               }
               if (state.status == _S.noLocation) {
-                return const Center(
+                final theme = Theme.of(context);
+                return  Center(
                   child: Text(
                     'No location has been saved yet :(',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20,
-                    ),
+                    style: theme.textTheme.headline6,
                   ),
                 );
               }

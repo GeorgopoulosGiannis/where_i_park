@@ -1,24 +1,69 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:maps_launcher/maps_launcher.dart';
 
 import 'package:where_i_park/core/domain/entities/car_location.dart';
 import 'package:where_i_park/core/helpers/helpers.dart';
 import 'package:where_i_park/features/find_car/presentation/bloc/find_car_bloc.dart';
 
-class MapLocationCard extends StatefulWidget {
+class MapLocationCard extends StatelessWidget {
   final CarLocation? location;
   const MapLocationCard({Key? key, required this.location}) : super(key: key);
 
   @override
-  State<MapLocationCard> createState() => _MapLocationCardState();
-}
-
-class _MapLocationCardState extends State<MapLocationCard> {
-  bool isEdit = false;
-  @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    return _CardDecoration(
+      color: theme.colorScheme.primary,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          if (location!.device != null)
+            _DeviceDescriptionText(
+              text: location!.device!.name,
+              color: theme.colorScheme.onPrimary,
+            ),
+          const SizedBox(
+            height: 5,
+          ),
+          _TimeStampText(
+            text: Helpers.toLocaleDateString(
+              location!.position.timestamp!,
+            ),
+            color: theme.colorScheme.onPrimary,
+          ),
+          const SizedBox(
+            height: 5,
+          ),
+          _DistanceText(
+            color: theme.colorScheme.onPrimary,
+          ),
+          const SizedBox(
+            height: 5,
+          ),
+          _GetDirectionsButton(
+            position: location!.position,
+            backgroundColor: theme.colorScheme.primaryVariant,
+            textColor: theme.colorScheme.onPrimary,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _CardDecoration extends StatelessWidget {
+  final Widget child;
+  final Color color;
+  const _CardDecoration({
+    Key? key,
+    required this.child,
+    required this.color,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
     final cardWidth = MediaQuery.of(context).size.width * 0.9;
     return Container(
       margin: const EdgeInsets.symmetric(
@@ -36,84 +81,138 @@ class _MapLocationCardState extends State<MapLocationCard> {
             spreadRadius: 2,
           ),
         ],
-        color: theme.colorScheme.secondary,
+        color: color,
         borderRadius: BorderRadius.circular(10.0),
       ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          if(widget.location!.device != null)
-            Text(widget.location!.device!.name),
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Text(
-              Helpers.toLocaleDateString(widget.location!.position.timestamp!),
-              overflow: TextOverflow.ellipsis,
-              textAlign: TextAlign.center,
-              maxLines: 2,
-              style:  TextStyle(
-                fontSize: 16,
-                color: theme.colorScheme.onPrimary,
-                fontWeight: FontWeight.bold,
-              ),
+      child: child,
+    );
+  }
+}
+
+class _DeviceDescriptionText extends StatelessWidget {
+  final String text;
+  final Color color;
+  const _DeviceDescriptionText({
+    Key? key,
+    required this.text,
+    required this.color,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Text(
+      text,
+      style: theme.textTheme.subtitle1?.copyWith(
+        color: color,
+        fontWeight: FontWeight.bold,
+        decoration: TextDecoration.underline,
+      ),
+    );
+  }
+}
+
+class _TimeStampText extends StatelessWidget {
+  final String text;
+  final Color color;
+  const _TimeStampText({
+    Key? key,
+    required this.text,
+    required this.color,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Text(
+      text,
+      overflow: TextOverflow.ellipsis,
+      textAlign: TextAlign.center,
+      maxLines: 2,
+      style: theme.textTheme.subtitle1?.copyWith(
+        color: color,
+        fontWeight: FontWeight.bold,
+      ),
+    );
+  }
+}
+
+class _DistanceText extends StatelessWidget {
+  final Color color;
+  const _DistanceText({
+    Key? key,
+    required this.color,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return BlocBuilder<FindCarBloc, FindCarState>(
+      builder: (context, state) {
+        return Text(
+          'Distance: ${state.distance}',
+          style: theme.textTheme.subtitle1?.copyWith(
+            color: color,
+            fontWeight: FontWeight.bold,
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _GetDirectionsButton extends StatelessWidget {
+  final Position position;
+  final Color backgroundColor;
+  final Color textColor;
+  const _GetDirectionsButton({
+    Key? key,
+    required this.position,
+    required this.backgroundColor,
+    required this.textColor,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Ink(
+      child: Material(
+        borderRadius: BorderRadius.circular(10.0),
+        color: backgroundColor,
+        child: InkWell(
+          onTap: () {
+            MapsLauncher.launchCoordinates(
+              position.latitude,
+              position.longitude,
+            );
+          },
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              vertical: 10.0,
+              horizontal: 15.0,
             ),
-          ),
-          const SizedBox(
-            height: 5,
-          ),
-          BlocBuilder<FindCarBloc, FindCarState>(
-            builder: (context, state) {
-              return Text(
-                'Distance: ${state.distance}',
-                style: TextStyle(
-                  color: theme.colorScheme.onPrimary,
-                ),
-              );
-            },
-          ),
-          const SizedBox(
-            height: 5,
-          ),
-          DecoratedBox(
-            decoration: const BoxDecoration(),
-            child: Ink(
-              width: cardWidth * 0.6,
-              child: Material(
-                borderRadius: BorderRadius.circular(10.0),
-                color: Theme.of(context).primaryColor,
-                child: InkWell(
-                  onTap: () {
-                    MapsLauncher.launchCoordinates(
-                      widget.location!.position.latitude,
-                      widget.location!.position.longitude,
-                    );
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 10.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Text(
-                          'Get Directions',
-                          style: TextStyle(
-                            color: Theme.of(context).colorScheme.onPrimary,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 22,
-                          ),
-                        ),
-                         Icon(
-                          Icons.directions_sharp,
-                          color: theme.colorScheme.onPrimary,
-                          size: 30,
-                        ),
-                      ],
-                    ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  'Get Directions',
+                  style: theme.textTheme.headline6?.copyWith(
+                    color: textColor,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
-              ),
+                const SizedBox(
+                  width: 10,
+                ),
+                Icon(
+                  Icons.directions_sharp,
+                  color: textColor,
+                  size: 30,
+                ),
+              ],
             ),
           ),
-        ],
+        ),
       ),
     );
   }

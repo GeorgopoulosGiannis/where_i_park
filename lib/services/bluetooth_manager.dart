@@ -4,8 +4,7 @@ import 'package:bluetooth_events/bluetooth_events.dart';
 import 'package:flutter/services.dart';
 import 'package:injectable/injectable.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:where_i_park/core/constants.dart';
+
 import 'package:where_i_park/core/data/models/bluetooth_device_model.dart';
 import 'package:where_i_park/services/injector.dart';
 import 'package:where_i_park/services/location_manager.dart';

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:where_i_park/features/add_device/presentation/widgets/list_title.dart';
 import 'package:where_i_park/features/home/presentation/widgets/home_item_icon_container.dart';
 
 import '../../../../services/injector.dart';
@@ -14,6 +15,7 @@ class AddDeviceScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return BlocProvider(
       create: (context) => sl<AddDeviceBloc>()
         ..add(
@@ -36,56 +38,59 @@ class AddDeviceScreen extends StatelessWidget {
                 if (snapshot.connectionState == ConnectionState.done) {
                   return BlocBuilder<AddDeviceBloc, AddDeviceState>(
                     builder: (context, state) {
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const _ListTitle(
-                            text: 'All devices',
-                          ),
-                          Flexible(
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: state.devicesNotTracked.isNotEmpty
-                                  ? DevicesList(
-                                      devices: state.devicesNotTracked,
-                                      onTap: (BluetoothDevice dev) =>
-                                          context.read<AddDeviceBloc>().add(
-                                                TrackDeviceEvent(
-                                                  dev,
+                      return ColoredBox(
+                        color: theme.colorScheme.surface,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const ListTitle(
+                              text: 'All devices',
+                            ),
+                            Flexible(
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: state.devicesNotTracked.isNotEmpty
+                                    ? DevicesList(
+                                        devices: state.devicesNotTracked,
+                                        onTap: (BluetoothDevice dev) =>
+                                            context.read<AddDeviceBloc>().add(
+                                                  TrackDeviceEvent(
+                                                    dev,
+                                                  ),
                                                 ),
-                                              ),
-                                    )
-                                  : const Padding(
-                                      padding: EdgeInsets.only(left: 8.0),
-                                      child: Text(
-                                        'No devices, make sure bluetooth is open',
+                                      )
+                                    : const Padding(
+                                        padding: EdgeInsets.only(left: 8.0),
+                                        child: Text(
+                                          'No devices, make sure bluetooth is open',
+                                        ),
                                       ),
-                                    ),
+                              ),
                             ),
-                          ),
-                          const _ListTitle(
-                            text: 'Tracking devices',
-                          ),
-                          Flexible(
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: state.alreadyAddedDevices.isNotEmpty
-                                  ? DevicesList(
-                                      devices: state.alreadyAddedDevices,
-                                      onTap: (BluetoothDevice dev) =>
-                                          context.read<AddDeviceBloc>().add(
-                                                RemoveTrackDeviceEvent(dev),
-                                              ),
-                                    )
-                                  : const Padding(
-                                      padding: EdgeInsets.only(left: 8.0),
-                                      child: Text(
-                                        'No devices added yet',
+                            const ListTitle(
+                              text: 'Tracking devices',
+                            ),
+                            Flexible(
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: state.alreadyAddedDevices.isNotEmpty
+                                    ? DevicesList(
+                                        devices: state.alreadyAddedDevices,
+                                        onTap: (BluetoothDevice dev) =>
+                                            context.read<AddDeviceBloc>().add(
+                                                  RemoveTrackDeviceEvent(dev),
+                                                ),
+                                      )
+                                    : const Padding(
+                                        padding: EdgeInsets.only(left: 8.0),
+                                        child: Text(
+                                          'No devices added yet',
+                                        ),
                                       ),
-                                    ),
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       );
                     },
                   );
@@ -96,38 +101,13 @@ class AddDeviceScreen extends StatelessWidget {
                     child: HomeItemIconContainer(
                       child: Icon(
                         Icons.bluetooth_drive,
-                        color: Theme.of(context).colorScheme.onPrimary,
+                        color: theme.colorScheme.onPrimary,
                         size: 65,
                       ),
                     ),
                   ),
                 );
               }),
-        ),
-      ),
-    );
-  }
-}
-
-class _ListTitle extends StatelessWidget {
-  final String text;
-  const _ListTitle({
-    required this.text,
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(
-        left: 15.0,
-        top: 8,
-      ),
-      child: Text(
-        text,
-        style: const TextStyle(
-          fontWeight: FontWeight.bold,
-          fontSize: 18,
         ),
       ),
     );

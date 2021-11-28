@@ -1,12 +1,8 @@
-import 'dart:convert';
+import 'dart:developer' as developer;
 
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:geocoding/geocoding.dart';
+
 import 'package:injectable/injectable.dart';
-
-import 'package:where_i_park/services/location_manager.dart';
-
-import 'injector.dart';
 
 @singleton
 class NotificationManager {
@@ -30,7 +26,7 @@ class NotificationManager {
         // }
       },
     );
-    print(succeeded);
+    developer.log(succeeded.toString());
   }
 
   static Future<void> showNotification({

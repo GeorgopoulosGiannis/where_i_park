@@ -18,7 +18,7 @@ class SuccessDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return _Dialog(
-      bgColor: Colors.green,
+      bgColor: Theme.of(context).colorScheme.primary,
       icon: Icons.check_circle,
       title: title,
       body: body,

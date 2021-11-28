@@ -1,3 +1,4 @@
+import 'dart:developer' as developer;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -37,7 +38,7 @@ class _HomeScreenState extends State<HomeScreen> {
         .flutterLocalNotificationsPlugin
         .getNotificationAppLaunchDetails();
     if (notificationAppLaunchDetails?.didNotificationLaunchApp ?? false) {
-      print(notificationAppLaunchDetails?.payload);
+      developer.log('${notificationAppLaunchDetails?.payload}');
     }
   }
 
@@ -78,7 +79,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     onPressed: () {},
                     icon: Icon(
                       Icons.menu,
-                      color: theme.colorScheme.primary,
+                      color: theme.colorScheme.primaryVariant,
                       size: 40,
                     ),
                   )),

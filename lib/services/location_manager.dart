@@ -1,16 +1,15 @@
 import 'dart:developer' as developer;
 import 'dart:convert';
 
-
 import 'package:geolocator/geolocator.dart';
 import 'package:injectable/injectable.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:app_settings/app_settings.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:where_i_park/core/data/models/bluetooth_device_model.dart';
 import 'package:where_i_park/core/data/models/car_location_model.dart';
 import 'package:where_i_park/features/add_device/domain/entities/bluetooth_device.dart';
 import 'package:where_i_park/core/domain/entities/car_location.dart';
+import 'package:where_i_park/services/storage_manager.dart';
 
 class _Constants {
   static const lastLocation = 'LAST_lOCATION';
@@ -18,9 +17,9 @@ class _Constants {
 
 @lazySingleton
 class LocationManager {
-  final SharedPreferences _prefs;
+  final StorageManager mgr;
 
-  LocationManager(this._prefs);
+  LocationManager(this.mgr);
 
   Future<Position> getCurrentPosition() async {
     return await Geolocator.getCurrentPosition(
@@ -29,14 +28,16 @@ class LocationManager {
   }
 
   Future<CarLocation?> getLastLocation() async {
-    final saved = _prefs.getString(_Constants.lastLocation);
-    if (saved != null) {
-      return CarLocationModel.fromJson(json.decode(saved));
+    final Map<String, dynamic>? savedEncoded =
+        await mgr.getValueByKey(_Constants.lastLocation);
+
+    if (savedEncoded != null) {
+      return CarLocationModel.fromJson(savedEncoded);
     }
   }
 
-  Stream<Position> getLocationUpdates()  {
-   return Geolocator.getPositionStream();
+  Stream<Position> getLocationUpdates() {
+    return Geolocator.getPositionStream();
   }
 
   Future<bool> saveCurrentLocation({
@@ -49,10 +50,7 @@ class LocationManager {
         deviceModel:
             device != null ? BluetoothDeviceModel.fromDevice(device) : null,
       );
-      return await _prefs.setString(
-        _Constants.lastLocation,
-        json.encode(loc.toJson()),
-      );
+      return await mgr.saveValue(_Constants.lastLocation, loc.toJson());
     } catch (e) {
       developer.log(e.toString());
       return false;

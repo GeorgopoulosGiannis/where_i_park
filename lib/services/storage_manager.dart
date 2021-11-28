@@ -30,7 +30,6 @@ class StorageManager {
       return [];
     }
   }
-  
 
   Future<bool> addDeviceForTracking(BluetoothDevice dev) async {
     try {
@@ -96,5 +95,17 @@ class StorageManager {
   Future<void> removeConnected() async {
     await _prefs.reload();
     await _prefs.remove(_Constants.connectedDevice);
+  }
+
+  Future<Map<String, dynamic>?> getValueByKey(String key) async {
+    await _prefs.reload();
+    final str = _prefs.getString(key);
+    if (str != null) {
+      return json.decode(str);
+    }
+  }
+
+  Future<bool> saveValue(String key, Map<String, dynamic> value) {
+    return _prefs.setString(key, json.encode(value));
   }
 }

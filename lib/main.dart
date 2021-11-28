@@ -1,8 +1,8 @@
+import 'dart:developer' as developer;
 import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:wakelock/wakelock.dart';
 import 'package:where_i_park/features/home/presentation/bloc/home_bloc.dart';
@@ -25,7 +25,7 @@ void main() async {
 }
 
 Future<void> onSelectNotification(String? payload) async {
-  print(payload);
+  developer.log(payload.toString());
 }
 
 class MyApp extends StatelessWidget {
@@ -43,11 +43,16 @@ class MyApp extends StatelessWidget {
         title: 'Where did i park?',
         theme: ThemeData.from(
           colorScheme: ColorScheme.light(
-              primary: Colors.blue, //Color.fromRGBO(100, 156, 166, 1),
-              secondary: Colors.blue[200]!, //  Color.fromRGBO(172, 196, 204, 1)
-        ),
+            primary: Colors.blue[200]!, //Color.fromRGBO(100, 156, 166, 1),
+            primaryVariant: Colors.blue,
+            surface: Colors.grey[300]!,
+            //secondary: , //  Color.fromRGBO(172, 196, 204, 1)
+          ),
         ).copyWith(
-          scaffoldBackgroundColor: Colors.grey[300]!,
+          scaffoldBackgroundColor: Colors.white, // Colors.grey[300]!,
+          appBarTheme: const AppBarTheme(
+            color: Colors.blue,
+          ),
         ),
         home: const SafeArea(
           child: HomeScreen(),
