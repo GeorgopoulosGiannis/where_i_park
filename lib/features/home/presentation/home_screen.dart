@@ -8,6 +8,7 @@ import 'package:where_i_park/core/presentation/widgets/dialogs.dart';
 import 'package:where_i_park/features/add_device/presentation/pages/add_device_screen.dart';
 
 import 'package:where_i_park/features/find_car/presentation/pages/find_car_screen.dart';
+import 'package:where_i_park/features/home/presentation/widgets/home_drawer.dart';
 import 'package:where_i_park/features/home/presentation/widgets/home_item.dart';
 import 'package:where_i_park/services/notification_manager.dart';
 
@@ -24,6 +25,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
   final _riveController = SimpleAnimation('Animation 1');
 
   @override
@@ -67,6 +69,8 @@ class _HomeScreenState extends State<HomeScreen> {
         }
       },
       child: Scaffold(
+        key: _scaffoldKey,
+        drawer: const HomeDrawer(),
         body: Column(
           children: [
             Align(
@@ -76,7 +80,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     right: 15.0,
                   ),
                   child: IconButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      _scaffoldKey.currentState?.openDrawer();
+                    },
                     icon: Icon(
                       Icons.menu,
                       color: theme.colorScheme.primaryVariant,
