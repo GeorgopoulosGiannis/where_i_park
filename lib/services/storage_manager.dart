@@ -105,6 +105,23 @@ class StorageManager {
     }
   }
 
+  Future<List<Map<String, dynamic>>> getListByKey(String key) async {
+    await _prefs.reload();
+    final str = _prefs.getStringList(key);
+    if (str != null) {
+      return str.map((e) => (json.decode(e) as Map<String, dynamic>)).toList();
+    }
+    return [];
+  }
+
+  Future<bool> setListByKey(
+      String key, List<Map<String, dynamic>> value) async {
+    final saved =
+        _prefs.setStringList(key, value.map((e) => json.encode(e)).toList());
+
+    return saved;
+  }
+
   Future<bool> saveValue(String key, Map<String, dynamic> value) {
     return _prefs.setString(key, json.encode(value));
   }

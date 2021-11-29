@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:where_i_park/features/chronology/presentation/pages/chronology_screen.dart';
 
 import 'drawer_header.dart';
 import 'drawer_list_tile.dart';
@@ -26,7 +28,15 @@ class HomeDrawer extends StatelessWidget {
           DrawerListTile(
             text: 'Chronology',
             iconData: Icons.history,
-            onTap: () {},
+            onTap: () {
+              Navigator.of(context).push(
+                CupertinoPageRoute(
+                  builder: (context) {
+                    return const ChronologyScreen();
+                  },
+                ),
+              );
+            },
           ),
           const Divider(
             height: 1,
@@ -40,14 +50,14 @@ class HomeDrawer extends StatelessWidget {
             height: 1,
           ),
           AboutListTile(
-            applicationLegalese:'All rights reserved.\n\u{a9}  2021 Ioannis Georgopoulos',
+            applicationLegalese:
+                'All rights reserved.\n\u{a9}  2021 Ioannis Georgopoulos',
             applicationName: 'Where Did I Park?',
             applicationVersion: '1.0.0',
             applicationIcon: Icon(
               Icons.directions_car_filled_rounded,
               color: Theme.of(context).colorScheme.primary,
             ),
-     
           ),
         ],
       ),

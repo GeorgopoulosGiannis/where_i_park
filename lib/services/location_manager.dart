@@ -4,6 +4,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:injectable/injectable.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:app_settings/app_settings.dart';
+import 'package:where_i_park/core/constants.dart';
 import 'package:where_i_park/core/data/models/bluetooth_device_model.dart';
 import 'package:where_i_park/core/data/models/car_location_model.dart';
 import 'package:where_i_park/features/add_device/domain/entities/bluetooth_device.dart';
@@ -27,11 +28,11 @@ class LocationManager {
   }
 
   Future<CarLocation?> getLastLocation() async {
-    final Map<String, dynamic>? savedEncoded =
-        await mgr.getValueByKey(_Constants.lastLocation);
+    final List<Map<String, dynamic>> savedEncoded =
+        await mgr.getListByKey(_Constants.lastLocation);
 
-    if (savedEncoded != null) {
-      return CarLocationModel.fromJson(savedEncoded);
+    if (savedEncoded.isNotEmpty) {
+      return CarLocationModel.fromJson(savedEncoded.first);
     }
   }
 
@@ -49,7 +50,12 @@ class LocationManager {
         deviceModel:
             device != null ? BluetoothDeviceModel.fromDevice(device) : null,
       );
-      return await mgr.saveValue(_Constants.lastLocation, loc.toJson());
+      final locToJson = loc.toJson();
+      await mgr.saveValue(_Constants.lastLocation, locToJson);
+
+      final saved = await mgr.getListByKey(Constants.carLocations);
+      saved.add(locToJson);
+      return await mgr.setListByKey(Constants.carLocations, saved);
     } catch (e) {
       developer.log(e.toString());
       return false;
