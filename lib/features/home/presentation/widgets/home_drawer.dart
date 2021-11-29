@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'drawer_header.dart';
 import 'drawer_list_tile.dart';
+import 'privacy_policy.dart';
 
 class HomeDrawer extends StatelessWidget {
   const HomeDrawer({Key? key}) : super(key: key);
@@ -38,17 +39,20 @@ class HomeDrawer extends StatelessWidget {
           const Divider(
             height: 1,
           ),
-             DrawerListTile(
-            text: 'About',
-            iconData: Icons.info_outline_rounded,
-            onTap: () {},
+          AboutListTile(
+            applicationLegalese: privacyPolicy,
+            applicationName: 'Where Did I Park?',
+            applicationVersion: '1.0.0',
+            applicationIcon: Icon(
+              Icons.directions_car_filled_rounded,
+              color: Theme.of(context).colorScheme.primary,
+            ),
+            icon: const Icon(
+              Icons.info_outline_rounded,
+            ),
           ),
         ],
       ),
     );
   }
 }
-
-
-
-
