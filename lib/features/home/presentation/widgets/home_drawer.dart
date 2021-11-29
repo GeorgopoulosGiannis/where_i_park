@@ -40,16 +40,14 @@ class HomeDrawer extends StatelessWidget {
             height: 1,
           ),
           AboutListTile(
-            applicationLegalese: privacyPolicy,
+            applicationLegalese:'All rights reserved.\n\u{a9}  2021 Ioannis Georgopoulos',
             applicationName: 'Where Did I Park?',
             applicationVersion: '1.0.0',
             applicationIcon: Icon(
               Icons.directions_car_filled_rounded,
               color: Theme.of(context).colorScheme.primary,
             ),
-            icon: const Icon(
-              Icons.info_outline_rounded,
-            ),
+     
           ),
         ],
       ),
