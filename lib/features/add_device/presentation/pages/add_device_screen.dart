@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:where_i_park/core/presentation/widgets/dialogs.dart';
 import 'package:where_i_park/features/add_device/presentation/widgets/list_title.dart';
+import 'package:where_i_park/features/add_device/presentation/widgets/permissions_dialog.dart';
 import 'package:where_i_park/features/home/presentation/widgets/home_item_icon_container.dart';
 
 import '../../../../services/injector.dart';
@@ -19,6 +22,9 @@ class AddDeviceScreen extends StatelessWidget {
     return BlocProvider(
       create: (context) => sl<AddDeviceBloc>()
         ..add(
+          LoadPermissionsEvent(),
+        )
+        ..add(
           LoadDevicesEvent(),
         )
         ..add(
@@ -36,7 +42,33 @@ class AddDeviceScreen extends StatelessWidget {
               ),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.done) {
-                  return BlocBuilder<AddDeviceBloc, AddDeviceState>(
+                  return BlocConsumer<AddDeviceBloc, AddDeviceState>(
+                    listenWhen: (prev, curr) =>
+                        prev.hasPermissions != curr.hasPermissions &&
+                        !curr.hasPermissions,
+                    listener: (context, state) async {
+                      if (!state.hasPermissions) {
+                        final bloc = context.read<AddDeviceBloc>();
+                        final result = await showDialog<bool>(
+                          context: context,
+                          barrierDismissible: false,
+                          builder: (context) {
+                            return BlocProvider<AddDeviceBloc>.value(
+                              value: bloc,
+                              child: const PermissionsDialog(
+                                body:
+                                    'In order to track bluetooth devices, "Allow Always" should be checked in location permissions',
+                                title:
+                                    'Background location permissions not granted',
+                              ),
+                            );
+                          },
+                        );
+                        if (result == null || !result) {
+                          Navigator.of(context).pop();
+                        }
+                      }
+                    },
                     builder: (context, state) {
                       return ColoredBox(
                         color: theme.colorScheme.surface,

@@ -44,6 +44,7 @@ class ErrorDialog extends StatelessWidget {
     );
   }
 }
+
 class InfoDialog extends StatelessWidget {
   final String title, body;
   const InfoDialog({
@@ -62,6 +63,7 @@ class InfoDialog extends StatelessWidget {
     );
   }
 }
+
 
 class _Dialog extends StatelessWidget {
   final Color bgColor;

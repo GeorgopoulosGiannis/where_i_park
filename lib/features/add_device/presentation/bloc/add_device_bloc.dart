@@ -4,7 +4,9 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:injectable/injectable.dart';
 import 'package:where_i_park/features/add_device/domain/usecases/add_tracking_device.dart';
+import 'package:where_i_park/features/add_device/domain/usecases/has_permissions.dart';
 import 'package:where_i_park/features/add_device/domain/usecases/remove_tracking_device.dart';
+import 'package:where_i_park/features/add_device/domain/usecases/request_permissions.dart';
 import '../../domain/entities/bluetooth_device.dart';
 import '../../domain/usecases/get_connected_device_subject.dart';
 import '../../domain/usecases/load_devices.dart';
@@ -20,6 +22,8 @@ class AddDeviceBloc extends Bloc<AddDeviceEvent, AddDeviceState> {
   final GetConnectedDeviceSubject getConnectedDeviceSubject;
   final AddTrackingDevice addTrackingDevice;
   final RemoveTrackingDevice removeTrackingDevice;
+  final HasPermissions hasPermissions;
+  final RequestPermissions requestPermissions;
 
   StreamSubscription<String?>? _subscription;
 
@@ -29,6 +33,8 @@ class AddDeviceBloc extends Bloc<AddDeviceEvent, AddDeviceState> {
     this.loadTrackingDevices,
     this.getConnectedDeviceSubject,
     this.removeTrackingDevice,
+    this.hasPermissions,
+    this.requestPermissions,
   ) : super(const AddDeviceState()) {
     _registerEvents();
   }
@@ -39,12 +45,14 @@ class AddDeviceBloc extends Bloc<AddDeviceEvent, AddDeviceState> {
   }
 
   void _registerEvents() {
+    on<LoadPermissionsEvent>(_onLoadPermissionsEvent);
     on<LoadDevicesEvent>(_onLoadDevicesEvent);
     on<LoadTrackingDevicesEvent>(_onLoadTrackingDevicesEvent);
     on<StartTrackingConnectedEvent>(_onStartTrackingConnectedEvent);
     on<NewDeviceConnectionEvent>(_onNewDeviceConnectionEvent);
     on<TrackDeviceEvent>(_onTrackDeviceEvent);
     on<RemoveTrackDeviceEvent>(_onRemoveTrackDeviceEvent);
+    on<RequestPermissionsEvent>(_onRequestPermissionsEvent);
   }
 
   FutureOr<void> _onLoadDevicesEvent(
@@ -116,7 +124,6 @@ class AddDeviceBloc extends Bloc<AddDeviceEvent, AddDeviceState> {
     TrackDeviceEvent event,
     Emitter<AddDeviceState> emit,
   ) async {
-    
     final added = await addTrackingDevice(event.device);
     add(LoadTrackingDevicesEvent());
   }
@@ -144,5 +151,33 @@ class AddDeviceBloc extends Bloc<AddDeviceEvent, AddDeviceState> {
   ) async {
     final removed = await removeTrackingDevice(event.device);
     add(LoadTrackingDevicesEvent());
+  }
+
+  FutureOr<void> _onLoadPermissionsEvent(
+    LoadPermissionsEvent event,
+    Emitter<AddDeviceState> emit,
+  ) async {
+    final hasPerm = await hasPermissions();
+    if (!hasPerm) {
+      emit(
+        state.copyWith(
+          hasPermissions: false,
+        ),
+      );
+    }
+  }
+
+  FutureOr<void> _onRequestPermissionsEvent(
+    RequestPermissionsEvent event,
+    Emitter<AddDeviceState> emit,
+  ) async {
+    final got = await requestPermissions();
+    if (got) {
+      emit(
+        state.copyWith(
+          hasPermissions: true,
+        ),
+      );
+    }
   }
 }

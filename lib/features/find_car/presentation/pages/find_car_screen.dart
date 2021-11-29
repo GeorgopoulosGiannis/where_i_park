@@ -54,7 +54,8 @@ class _FindCarScreenState extends State<FindCarScreen> {
                 final theme = Theme.of(context);
                 return  Center(
                   child: Text(
-                    'No location has been saved yet :(',
+                    'No locations have been saved yet 😞',
+                    textAlign: TextAlign.center,
                     style: theme.textTheme.headline6,
                   ),
                 );

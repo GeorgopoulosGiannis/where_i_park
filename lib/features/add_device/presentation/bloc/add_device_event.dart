@@ -7,6 +7,9 @@ abstract class AddDeviceEvent extends Equatable {
   List<Object> get props => [];
 }
 
+class LoadPermissionsEvent extends AddDeviceEvent {}
+class RequestPermissionsEvent extends AddDeviceEvent {}
+
 class LoadDevicesEvent extends AddDeviceEvent {}
 
 class LoadTrackingDevicesEvent extends AddDeviceEvent {}
