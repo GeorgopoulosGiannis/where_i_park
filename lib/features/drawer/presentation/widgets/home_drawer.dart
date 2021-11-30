@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:where_i_park/features/chronology/presentation/pages/chronology_screen.dart';
+import 'package:where_i_park/features/settings/presentation/pages/settings_screen.dart';
 
 import 'drawer_header.dart';
 import 'drawer_list_tile.dart';
@@ -43,7 +44,15 @@ class HomeDrawer extends StatelessWidget {
           DrawerListTile(
             text: 'Settings',
             iconData: Icons.settings,
-            onTap: () {},
+            onTap: () {
+              Navigator.of(context).push(
+                CupertinoPageRoute(
+                  builder: (context) {
+                    return const SettingsScreen();
+                  },
+                ),
+              );
+            },
           ),
           const Divider(
             height: 1,
