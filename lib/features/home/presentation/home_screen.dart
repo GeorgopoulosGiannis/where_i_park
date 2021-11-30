@@ -77,7 +77,7 @@ class _HomeScreenState extends State<HomeScreen> {
             Align(
               alignment: Alignment.centerRight,
               child: MenuButton(
-                onTap: () => _scaffoldKey.currentState?.openDrawer,
+                onTap: () => _scaffoldKey.currentState?.openDrawer(),
               ),
             ),
             Expanded(
