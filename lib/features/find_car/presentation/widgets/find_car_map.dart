@@ -45,59 +45,67 @@ class FindCarMap extends StatefulWidget {
 
 class _FindCarMapState extends State<FindCarMap> {
   GoogleMapController? _controller;
-  BitmapDescriptor? icon;
+  late Future<BitmapDescriptor> icon;
 
   @override
   void initState() {
-    loadIcon();
+    icon = loadIcon();
     super.initState();
   }
 
-  Future<void> loadIcon() async {
-    icon = BitmapDescriptor.fromBytes(
+  Future<BitmapDescriptor> loadIcon() async {
+    final result = BitmapDescriptor.fromBytes(
         await getBytesFromAsset('assets/car_icon.png', 200));
-    setState(() {});
+    return result;
   }
 
   @override
   Widget build(BuildContext context) {
-    return GoogleMap(
-      initialCameraPosition: const CameraPosition(
-        target: defPosition,
-        zoom: 12,
-      ),
-      mapToolbarEnabled: false,
-      myLocationButtonEnabled: true,
-      myLocationEnabled: true,
-      markers: widget.locations
-          .map(
-            (loc) => Marker(
-              icon: icon ?? BitmapDescriptor.defaultMarker,
-              markerId: const MarkerId(
-                'markerID',
-              ),
-              position: LatLng(
-                loc.position.latitude,
-                loc.position.longitude,
-              ),
-              onTap: () {},
+    return FutureBuilder<BitmapDescriptor>(
+      future: icon,
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          return GoogleMap(
+            initialCameraPosition: const CameraPosition(
+              target: defPosition,
+              zoom: 12,
             ),
-          )
-          .toSet(),
-      onMapCreated: (mapController) {
-        _controller = mapController;
-        if (widget.locations.isNotEmpty) {
-          final loc = widget.locations.first;
-          _controller!.animateCamera(
-            CameraUpdate.newLatLngZoom(
-              LatLng(
-                loc.position.latitude,
-                loc.position.longitude,
-              ),
-              15,
-            ),
+            mapToolbarEnabled: false,
+            myLocationButtonEnabled: true,
+            myLocationEnabled: true,
+            markers: widget.locations
+                .map(
+                  (loc) => Marker(
+                    icon: snapshot.data!, //?? BitmapDescriptor.defaultMarker,
+                    markerId: const MarkerId(
+                      'markerID',
+                    ),
+                    position: LatLng(
+                      loc.position.latitude,
+                      loc.position.longitude,
+                    ),
+                    onTap: () {},
+                  ),
+                )
+                .toSet(),
+            onMapCreated: (mapController) {
+              _controller = mapController;
+              if (widget.locations.isNotEmpty) {
+                final loc = widget.locations.first;
+                _controller!.animateCamera(
+                  CameraUpdate.newLatLngZoom(
+                    LatLng(
+                      loc.position.latitude,
+                      loc.position.longitude,
+                    ),
+                    15,
+                  ),
+                );
+              }
+            },
           );
         }
+        return Container();
       },
     );
   }

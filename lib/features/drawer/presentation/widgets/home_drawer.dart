@@ -4,7 +4,6 @@ import 'package:where_i_park/features/chronology/presentation/pages/chronology_s
 
 import 'drawer_header.dart';
 import 'drawer_list_tile.dart';
-import 'privacy_policy.dart';
 
 class HomeDrawer extends StatelessWidget {
   const HomeDrawer({Key? key}) : super(key: key);
@@ -54,6 +53,9 @@ class HomeDrawer extends StatelessWidget {
                 'All rights reserved.\n\u{a9}  2021 Ioannis Georgopoulos',
             applicationName: 'Where Did I Park?',
             applicationVersion: '1.0.0',
+            icon: const Icon(
+              Icons.info_outline_rounded,
+            ),
             applicationIcon: Icon(
               Icons.directions_car_filled_rounded,
               color: Theme.of(context).colorScheme.primary,

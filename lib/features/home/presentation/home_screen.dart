@@ -8,11 +8,12 @@ import 'package:where_i_park/core/presentation/widgets/dialogs.dart';
 import 'package:where_i_park/features/add_device/presentation/pages/add_device_screen.dart';
 
 import 'package:where_i_park/features/find_car/presentation/pages/find_car_screen.dart';
-import 'package:where_i_park/features/home/presentation/widgets/home_drawer.dart';
+import 'package:where_i_park/features/drawer/presentation/widgets/home_drawer.dart';
 import 'package:where_i_park/features/home/presentation/widgets/home_item.dart';
 import 'package:where_i_park/services/notification_manager.dart';
 
 import 'bloc/home_bloc.dart';
+import 'widgets/menu_button.dart';
 
 const verticalPadding = 0.0;
 const horizontalPadding = 15.0;
@@ -75,20 +76,9 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             Align(
               alignment: Alignment.centerRight,
-              child: Padding(
-                  padding: const EdgeInsets.only(
-                    right: 15.0,
-                  ),
-                  child: IconButton(
-                    onPressed: () {
-                      _scaffoldKey.currentState?.openDrawer();
-                    },
-                    icon: Icon(
-                      Icons.menu,
-                      color: theme.colorScheme.primaryVariant,
-                      size: 40,
-                    ),
-                  )),
+              child: MenuButton(
+                onTap: () => _scaffoldKey.currentState?.openDrawer,
+              ),
             ),
             Expanded(
               child: Padding(

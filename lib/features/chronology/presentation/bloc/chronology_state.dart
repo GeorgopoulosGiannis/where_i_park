@@ -9,6 +9,8 @@ abstract class ChronologyState extends Equatable {
 
 class Loading extends ChronologyState {}
 
+class Empty extends ChronologyState {}
+
 class Loaded extends ChronologyState {
   final List<CarLocation> locations;
 

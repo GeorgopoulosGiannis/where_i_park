@@ -6,9 +6,10 @@ import 'package:maps_launcher/maps_launcher.dart';
 import 'package:where_i_park/core/domain/entities/car_location.dart';
 import 'package:where_i_park/core/helpers/helpers.dart';
 import 'package:where_i_park/features/find_car/presentation/bloc/find_car_bloc.dart';
+import 'package:where_i_park/features/find_car/presentation/widgets/card_actions_button.dart';
 
 class MapLocationCard extends StatelessWidget {
-  final CarLocation? location;
+  final CarLocation location;
   const MapLocationCard({Key? key, required this.location}) : super(key: key);
 
   @override
@@ -16,36 +17,50 @@ class MapLocationCard extends StatelessWidget {
     final theme = Theme.of(context);
     return _CardDecoration(
       color: theme.colorScheme.primary,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      child: Stack(
+        alignment: Alignment.center,
         children: [
-          if (location!.device != null)
-            _DeviceDescriptionText(
-              text: location!.device!.name,
-              color: theme.colorScheme.onPrimary,
+          Align(
+            alignment: Alignment.topRight,
+            child: Material(
+              color: Colors.transparent,
+              child: CardActionsButton(
+                location: location,
+              ),
             ),
-          const SizedBox(
-            height: 5,
           ),
-          _TimeStampText(
-            text: Helpers.toLocaleDateString(
-              location!.position.timestamp!,
-            ),
-            color: theme.colorScheme.onPrimary,
-          ),
-          const SizedBox(
-            height: 5,
-          ),
-          _DistanceText(
-            color: theme.colorScheme.onPrimary,
-          ),
-          const SizedBox(
-            height: 5,
-          ),
-          _GetDirectionsButton(
-            position: location!.position,
-            backgroundColor: theme.colorScheme.primaryVariant,
-            textColor: theme.colorScheme.onPrimary,
+          Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              if (location.device != null)
+                _DeviceDescriptionText(
+                  text: location.device!.name,
+                  color: theme.colorScheme.onPrimary,
+                ),
+              const SizedBox(
+                height: 5,
+              ),
+              _TimeStampText(
+                text: Helpers.toLocaleDateString(
+                  location.position.timestamp!,
+                ),
+                color: theme.colorScheme.onPrimary,
+              ),
+              const SizedBox(
+                height: 5,
+              ),
+              _DistanceText(
+                color: theme.colorScheme.onPrimary,
+              ),
+              const SizedBox(
+                height: 5,
+              ),
+              _GetDirectionsButton(
+                position: location.position,
+                backgroundColor: theme.colorScheme.primaryVariant,
+                textColor: theme.colorScheme.onPrimary,
+              ),
+            ],
           ),
         ],
       ),

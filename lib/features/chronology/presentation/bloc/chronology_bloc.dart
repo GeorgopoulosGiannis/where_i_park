@@ -28,6 +28,8 @@ class ChronologyBloc extends Bloc<ChronologyEvent, ChronologyState> {
     Emitter<ChronologyState> emit,
   ) async {
     final locations = await getAllLocations();
-    emit(Loaded(locations));
+    emit(
+      locations.isEmpty ? Empty() : Loaded(locations.reversed.toList()),
+    );
   }
 }

@@ -4,6 +4,7 @@ import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:where_i_park/core/helpers/helpers.dart';
 import 'package:where_i_park/features/chronology/presentation/bloc/chronology_bloc.dart';
+import 'package:where_i_park/features/find_car/presentation/widgets/find_car_map.dart';
 import 'package:where_i_park/services/injector.dart';
 
 class ChronologyScreen extends StatelessWidget {
@@ -26,19 +27,32 @@ class ChronologyScreen extends StatelessWidget {
                   child: CircularProgressIndicator(),
                 );
               }
+              if (state is Empty) {
+                final theme = Theme.of(context);
+                return Center(
+                  child: Text(
+                    'No locations have been saved yet 😞',
+                    textAlign: TextAlign.center,
+                    style: theme.textTheme.headline6,
+                  ),
+                );
+              }
               if (state is Loaded) {
-                return ListView.builder(
-                  itemCount: state.locations.length,
-                  itemBuilder: (context, index) {
-                    final loc = state.locations[index];
+                return 
+                    ListView.separated(
+                      separatorBuilder: (context, index) => const Divider(),
+                      itemCount: state.locations.length,
+                      itemBuilder: (context, index) {
+                        final loc = state.locations[index];
 
-                    return ListTile(
-                      title: Text(loc.device?.name ?? 'No device'),
-                      subtitle: Text(
-                        '${loc.position.toString()}\n${Helpers.toLocaleDateString(loc.position.timestamp!)}',
-                      ),
-                    );
-                  },
+                        return ListTile(
+                          title: Text(loc.device?.name ?? 'Saved manually'),
+                          subtitle: Text(
+                            Helpers.toLocaleDateString(loc.position.timestamp!),
+                          ),
+                        );
+                      },
+                   
                 );
               }
               return Container();

@@ -74,7 +74,7 @@ class _FindCarScreenState extends State<FindCarScreen> {
                     if (state.location != null)
                       Flexible(
                         child: MapLocationCard(
-                          location: state.location,
+                          location: state.location!,
                         ),
                       ),
                   ],

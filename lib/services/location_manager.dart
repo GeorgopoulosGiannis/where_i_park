@@ -28,11 +28,11 @@ class LocationManager {
   }
 
   Future<CarLocation?> getLastLocation() async {
-    final List<Map<String, dynamic>> savedEncoded =
-        await mgr.getListByKey(_Constants.lastLocation);
+    final Map<String, dynamic>? savedEncoded =
+        await mgr.getValueByKey(_Constants.lastLocation);
 
-    if (savedEncoded.isNotEmpty) {
-      return CarLocationModel.fromJson(savedEncoded.first);
+    if (savedEncoded != null) {
+      return CarLocationModel.fromJson(savedEncoded);
     }
   }
 
