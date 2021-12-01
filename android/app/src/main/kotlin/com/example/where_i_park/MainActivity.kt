@@ -1,4 +1,4 @@
-package com.example.where_i_park
+package com.georgopoulosioannis.where_i_park
 
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
