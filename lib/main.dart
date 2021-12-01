@@ -3,7 +3,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-//import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:wakelock/wakelock.dart';
 import 'package:where_i_park/features/home/presentation/bloc/home_bloc.dart';
@@ -19,8 +19,8 @@ void main() async {
     await Wakelock.enable();
     await configureDependencies();
     await BluetoothManager.init();
-    // final prefs = await SharedPreferences.getInstance();
-    // await prefs.clear();
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.clear();
     runApp(const MyApp());
   });
 }

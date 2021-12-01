@@ -7,8 +7,13 @@ abstract class FindCarEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class LoadEvent extends FindCarEvent {
-  const LoadEvent();
+class LoadLastEvent extends FindCarEvent {
+  const LoadLastEvent();
+}
+
+class LoadForLocationEvt extends FindCarEvent {
+  final CarLocation location;
+  const LoadForLocationEvt(this.location);
 }
 
 class PositionChangedEvent extends FindCarEvent {

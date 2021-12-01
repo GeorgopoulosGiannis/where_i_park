@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:where_i_park/core/domain/entities/car_location.dart';
 
+import 'delete_location_menu_item.dart';
+import 'share_location_menu_item.dart';
+
 class CardActionsButton extends StatelessWidget {
   final CarLocation location;
   const CardActionsButton({
@@ -16,36 +19,17 @@ class CardActionsButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return PopupMenuButton(
+      color: theme.colorScheme.background,
       itemBuilder: (context) {
         return [
           PopupMenuItem(
             onTap: () {
               Share.share(shareLink, subject: 'Find my car here!');
             },
-            child: Row(
-              children: const [
-                Icon(
-                  Icons.share,
-                ),
-                SizedBox(
-                  width: 5,
-                ),
-                Text('Share'),
-              ],
-            ),
+            child: const ShareLocationMenuItem(),
           ),
-          PopupMenuItem(
-            child: Row(
-              children: const [
-                Icon(
-                  Icons.delete,
-                ),
-                SizedBox(
-                  width: 5,
-                ),
-                Text('Delete'),
-              ],
-            ),
+          const PopupMenuItem(
+            child: DeleteLocationMenuItem(),
           ),
         ];
       },

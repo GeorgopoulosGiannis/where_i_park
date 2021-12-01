@@ -36,19 +36,19 @@ class DevicesList extends StatelessWidget {
               child: Row(
                 children: [
                   Expanded(
-                    child: Text(
-                      dev.name,
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 2,
-                      style: theme.textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold,)
-                    ),
+                    child: Text(dev.name,
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 2,
+                        style: theme.textTheme.bodyText1?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        )),
                   ),
                   const SizedBox(
                     width: 5,
                   ),
                   Text(
                     isConnected ? 'Connected' : 'Not Connected',
-                    style:theme.textTheme.bodyText1,
+                    style: theme.textTheme.bodyText1,
                   ),
                 ],
               ),

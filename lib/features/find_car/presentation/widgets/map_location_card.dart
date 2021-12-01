@@ -8,9 +8,16 @@ import 'package:where_i_park/core/helpers/helpers.dart';
 import 'package:where_i_park/features/find_car/presentation/bloc/find_car_bloc.dart';
 import 'package:where_i_park/features/find_car/presentation/widgets/card_actions_button.dart';
 
+const smallPaddingBottom = SizedBox(
+  height: 5,
+);
+
 class MapLocationCard extends StatelessWidget {
   final CarLocation location;
-  const MapLocationCard({Key? key, required this.location}) : super(key: key);
+  const MapLocationCard({
+    Key? key,
+    required this.location,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -37,24 +44,18 @@ class MapLocationCard extends StatelessWidget {
                   text: location.device!.name,
                   color: theme.colorScheme.onPrimary,
                 ),
-              const SizedBox(
-                height: 5,
-              ),
+              smallPaddingBottom,
               _TimeStampText(
                 text: Helpers.toLocaleDateString(
                   location.position.timestamp!,
                 ),
                 color: theme.colorScheme.onPrimary,
               ),
-              const SizedBox(
-                height: 5,
-              ),
+              smallPaddingBottom,
               _DistanceText(
                 color: theme.colorScheme.onPrimary,
               ),
-              const SizedBox(
-                height: 5,
-              ),
+              smallPaddingBottom,
               _GetDirectionsButton(
                 position: location.position,
                 backgroundColor: theme.colorScheme.primaryVariant,

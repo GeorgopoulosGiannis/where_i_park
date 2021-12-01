@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rive/rive.dart';
+import 'package:where_i_park/core/domain/entities/car_location.dart';
 
 import 'package:where_i_park/features/find_car/presentation/bloc/find_car_bloc.dart';
 import 'package:where_i_park/features/find_car/presentation/widgets/find_car_map.dart';
@@ -12,22 +13,24 @@ import 'package:where_i_park/services/injector.dart';
 
 typedef _S = FindCarStatus;
 
-class FindCarScreen extends StatefulWidget {
-  const FindCarScreen({
+class ShowLocationScreen extends StatefulWidget {
+  final CarLocation location;
+  const ShowLocationScreen({
     Key? key,
+    required this.location,
   }) : super(key: key);
 
   @override
-  State<FindCarScreen> createState() => _FindCarScreenState();
+  State<ShowLocationScreen> createState() => _ShowLocationScreenState();
 }
 
-class _FindCarScreenState extends State<FindCarScreen> {
+class _ShowLocationScreenState extends State<ShowLocationScreen> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<FindCarBloc>(
       create: (context) => sl<FindCarBloc>()
         ..add(
-          const LoadLastEvent(),
+          LoadForLocationEvt(widget.location),
         ),
       child: SafeArea(
         child: Scaffold(

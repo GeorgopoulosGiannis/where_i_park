@@ -1,9 +1,11 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:where_i_park/core/helpers/helpers.dart';
 import 'package:where_i_park/features/chronology/presentation/bloc/chronology_bloc.dart';
+import 'package:where_i_park/features/find_car/presentation/pages/show_location_screen.dart';
 import 'package:where_i_park/features/find_car/presentation/widgets/find_car_map.dart';
 import 'package:where_i_park/services/injector.dart';
 
@@ -38,21 +40,28 @@ class ChronologyScreen extends StatelessWidget {
                 );
               }
               if (state is Loaded) {
-                return 
-                    ListView.separated(
-                      separatorBuilder: (context, index) => const Divider(),
-                      itemCount: state.locations.length,
-                      itemBuilder: (context, index) {
-                        final loc = state.locations[index];
+                return ListView.separated(
+                  separatorBuilder: (context, index) => const Divider(),
+                  itemCount: state.locations.length,
+                  itemBuilder: (context, index) {
+                    final loc = state.locations[index];
 
-                        return ListTile(
-                          title: Text(loc.device?.name ?? 'Saved manually'),
-                          subtitle: Text(
-                            Helpers.toLocaleDateString(loc.position.timestamp!),
+                    return ListTile(
+                      onTap: () {
+                        Navigator.of(context).push(
+                          CupertinoPageRoute(
+                            builder: (context) {
+                              return ShowLocationScreen(location: loc);
+                            },
                           ),
                         );
                       },
-                   
+                      title: Text(loc.device?.name ?? 'Saved manually'),
+                      subtitle: Text(
+                        Helpers.toLocaleDateString(loc.position.timestamp!),
+                      ),
+                    );
+                  },
                 );
               }
               return Container();

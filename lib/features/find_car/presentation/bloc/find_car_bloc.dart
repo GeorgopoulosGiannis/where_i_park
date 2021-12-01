@@ -46,17 +46,17 @@ class FindCarBloc extends Bloc<FindCarEvent, FindCarState> {
   }
 
   void _registerEvents() {
-    on<LoadEvent>(_onLoadEvent);
+    on<LoadLastEvent>(_onLoadLastEvent);
     on<PositionChangedEvent>(_onPositionChangedEvent);
+    on<LoadForLocationEvt>(_onLoadForLocationEvt);
   }
 
-  FutureOr<void> _onLoadEvent(
-    LoadEvent event,
+  FutureOr<void> _onLoadLastEvent(
+    LoadLastEvent event,
     Emitter<FindCarState> emit,
   ) async {
     final location = await getLastLocation();
     final currentPosition = await getCurrentLocation();
-    double distance = 0.0;
     if (location == null) {
       emit(
         state.copyWith(
@@ -64,24 +64,14 @@ class FindCarBloc extends Bloc<FindCarEvent, FindCarState> {
           currentPosition: currentPosition,
         ),
       );
-      return;
+    } else {
+      emit(
+        state.copyWith(
+          currentPosition: currentPosition,
+        ),
+      );
+      add(LoadForLocationEvt(location));
     }
-    distance = distanceInKmBetweenEarthCoordinates(
-      LatLng(
-        currentPosition.latitude,
-        currentPosition.longitude,
-      ),
-      LatLng(
-        location.position.latitude,
-        location.position.longitude,
-      ),
-    );
-    emit(state.copyWith(
-      status: FindCarStatus.loaded,
-      currentPosition: currentPosition,
-      location: location,
-      distance: distance.toStringAsFixed(2),
-    ));
   }
 
   FutureOr<void> _onPositionChangedEvent(
@@ -143,5 +133,39 @@ class FindCarBloc extends Bloc<FindCarEvent, FindCarState> {
 
     final c = 2 * atan2(sqrt(a), sqrt(1 - a));
     return earthRadiusKm * c;
+  }
+
+  FutureOr<void> _onLoadForLocationEvt(
+    LoadForLocationEvt event,
+    Emitter<FindCarState> emit,
+  ) async {
+    final location = event.location;
+
+    final Position? currentPosition;
+    
+    if (state.currentPosition == null) {
+      currentPosition = await getCurrentLocation();
+    } else {
+      currentPosition = state.currentPosition;
+    }
+
+    final distance = getDistance(
+      LatLng(
+        currentPosition!.latitude,
+        currentPosition.longitude,
+      ),
+      LatLng(
+        location.position.latitude,
+        location.position.longitude,
+      ),
+    );
+    emit(
+      state.copyWith(
+        status: FindCarStatus.loaded,
+        currentPosition: currentPosition,
+        location: location,
+        distance: distance,
+      ),
+    );
   }
 }
