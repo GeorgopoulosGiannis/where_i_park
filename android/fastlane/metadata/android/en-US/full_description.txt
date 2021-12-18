@@ -1,0 +1,20 @@
+Having trouble remembering where you parked you car? 
+Fear no more.
+The solution is here. If you find yourself forgetting where you parked your car,
+download this app, and you will never wonder around again looking for your car.
+
+The app offers and automatic and a manual method to save your car's last parked position.
+
+1) The automatic method.
+    If your car has bluetooth you can add it through the app's  "Add 
+    bluetooth" option, and then anytime your car disconnects from your phone 
+    the car's location will be saved without you doing anything! That's it you no 
+   longer need to remember where you parked or to remember to save the 
+   car's position.
+2) The manual method.
+    If your car does not have bluetooth worry not! You can still save the 
+    location of your car manually by opening the app and tapping "Save 
+   location". The only drawback with the manual method, as opposed to 
+    automatic method, is that you need to remember to save the location when 
+    you park.
+   remember to save it when you park.
