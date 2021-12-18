@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:permission_handler/permission_handler.dart';
-import 'package:where_i_park/core/presentation/widgets/dialogs.dart';
+
 import 'package:where_i_park/features/add_device/presentation/widgets/list_title.dart';
 import 'package:where_i_park/features/add_device/presentation/widgets/permissions_dialog.dart';
 import 'package:where_i_park/features/home/presentation/widgets/home_item_icon_container.dart';
@@ -12,6 +11,7 @@ import '../../domain/entities/bluetooth_device.dart';
 import '../widgets/devices_list.dart';
 
 import '../bloc/add_device_bloc.dart';
+
 
 class AddDeviceScreen extends StatelessWidget {
   const AddDeviceScreen({Key? key}) : super(key: key);
@@ -56,10 +56,9 @@ class AddDeviceScreen extends StatelessWidget {
                             return BlocProvider<AddDeviceBloc>.value(
                               value: bloc,
                               child: const PermissionsDialog(
-                                body:
-                                    'In order to track bluetooth devices, "Allow Always" should be checked in location permissions',
+                                
                                 title:
-                                    'Background location permissions not granted',
+                                    'Background location permissions required',
                               ),
                             );
                           },

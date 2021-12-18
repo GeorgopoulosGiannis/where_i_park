@@ -8,6 +8,7 @@ import 'package:get_it/get_it.dart' as _i1;
 import 'package:injectable/injectable.dart' as _i2;
 import 'package:shared_preferences/shared_preferences.dart' as _i7;
 
+import '../core/domain/usecases/delete_location.dart' as _i16;
 import '../core/domain/usecases/get_current_position.dart' as _i17;
 import '../core/domain/usecases/get_last_location.dart' as _i18;
 import '../core/domain/usecases/save_current_location.dart' as _i14;
@@ -23,16 +24,16 @@ import '../features/add_device/domain/usecases/remove_tracking_device.dart'
     as _i12;
 import '../features/add_device/domain/usecases/request_permissions.dart'
     as _i13;
-import '../features/add_device/presentation/bloc/add_device_bloc.dart' as _i22;
-import '../features/chronology/domain/usecases/get_all_locations.dart' as _i9;
-import '../features/chronology/presentation/bloc/chronology_bloc.dart' as _i16;
+import '../features/add_device/presentation/bloc/add_device_bloc.dart' as _i23;
 import '../features/find_car/domain/usecases/get_location_updates.dart' as _i19;
-import '../features/find_car/presentation/bloc/find_car_bloc.dart' as _i23;
-import '../features/home/presentation/bloc/home_bloc.dart' as _i21;
+import '../features/find_car/presentation/bloc/find_car_bloc.dart' as _i24;
+import '../features/history/domain/usecases/get_all_locations.dart' as _i9;
+import '../features/history/presentation/bloc/history_bloc.dart' as _i21;
+import '../features/home/presentation/bloc/home_bloc.dart' as _i22;
 import 'bluetooth_manager.dart' as _i3;
 import 'location_manager.dart' as _i11;
 import 'notification_manager.dart' as _i6;
-import 'register_module.dart' as _i24;
+import 'register_module.dart' as _i25;
 import 'storage_manager.dart' as _i8; // ignore_for_file: unnecessary_lambdas
 
 // ignore_for_file: lines_longer_than_80_chars
@@ -65,8 +66,8 @@ Future<_i1.GetIt> $initGetIt(_i1.GetIt get,
       () => _i14.SaveCurrentLocation(get<_i11.LocationManager>()));
   gh.lazySingleton<_i15.AddTrackingDevice>(() => _i15.AddTrackingDevice(
       get<_i8.StorageManager>(), get<_i11.LocationManager>()));
-  gh.factory<_i16.ChronologyBloc>(
-      () => _i16.ChronologyBloc(get<_i9.GetAllLocations>()));
+  gh.lazySingleton<_i16.DeleteLocations>(
+      () => _i16.DeleteLocations(get<_i11.LocationManager>()));
   gh.lazySingleton<_i17.GetCurrentPosition>(
       () => _i17.GetCurrentPosition(get<_i11.LocationManager>()));
   gh.lazySingleton<_i18.GetLastLocation>(
@@ -75,9 +76,11 @@ Future<_i1.GetIt> $initGetIt(_i1.GetIt get,
       () => _i19.GetLocationUpdates(get<_i11.LocationManager>()));
   gh.lazySingleton<_i20.HasPermissions>(
       () => _i20.HasPermissions(get<_i11.LocationManager>()));
-  gh.factory<_i21.HomeBloc>(
-      () => _i21.HomeBloc(get<_i14.SaveCurrentLocation>()));
-  gh.factory<_i22.AddDeviceBloc>(() => _i22.AddDeviceBloc(
+  gh.factory<_i21.HistoryBloc>(() => _i21.HistoryBloc(
+      get<_i9.GetAllLocations>(), get<_i16.DeleteLocations>()));
+  gh.factory<_i22.HomeBloc>(
+      () => _i22.HomeBloc(get<_i14.SaveCurrentLocation>()));
+  gh.factory<_i23.AddDeviceBloc>(() => _i23.AddDeviceBloc(
       get<_i15.AddTrackingDevice>(),
       get<_i5.LoadDevices>(),
       get<_i10.LoadTrackingDevices>(),
@@ -85,11 +88,12 @@ Future<_i1.GetIt> $initGetIt(_i1.GetIt get,
       get<_i12.RemoveTrackingDevice>(),
       get<_i20.HasPermissions>(),
       get<_i13.RequestPermissions>()));
-  gh.factory<_i23.FindCarBloc>(() => _i23.FindCarBloc(
+  gh.factory<_i24.FindCarBloc>(() => _i24.FindCarBloc(
       get<_i17.GetCurrentPosition>(),
       get<_i18.GetLastLocation>(),
-      get<_i19.GetLocationUpdates>()));
+      get<_i19.GetLocationUpdates>(),
+      get<_i16.DeleteLocations>()));
   return get;
 }
 
-class _$RegisterModule extends _i24.RegisterModule {}
+class _$RegisterModule extends _i25.RegisterModule {}

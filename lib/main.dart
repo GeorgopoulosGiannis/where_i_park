@@ -1,9 +1,10 @@
 import 'dart:developer' as developer;
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import 'package:wakelock/wakelock.dart';
 import 'package:where_i_park/features/home/presentation/bloc/home_bloc.dart';
@@ -19,8 +20,9 @@ void main() async {
     await Wakelock.enable();
     await configureDependencies();
     await BluetoothManager.init();
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.clear();
+    if (defaultTargetPlatform == TargetPlatform.android) {
+      AndroidGoogleMapsFlutter.useAndroidViewSurface = true;
+    }
     runApp(const MyApp());
   });
 }
@@ -45,9 +47,9 @@ class MyApp extends StatelessWidget {
         theme: ThemeData.from(
           colorScheme: ColorScheme.light(
             primary: Colors.blue[200]!, //Color.fromRGBO(100, 156, 166, 1),
-            primaryVariant: Colors.blue,
+            primaryVariant: Colors.blue, //  Color.fromRGBO(172, 196, 204, 1)
             surface: Colors.grey[300]!,
-            //secondary: , //  Color.fromRGBO(172, 196, 204, 1)
+            
           ),
         ).copyWith(
           scaffoldBackgroundColor: Colors.white, // Colors.grey[300]!,

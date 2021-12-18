@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:provider/src/provider.dart';
 import 'package:where_i_park/features/add_device/presentation/bloc/add_device_bloc.dart';
 
 class Constants {
@@ -10,11 +9,13 @@ class Constants {
   static const double iconSize = 140;
 }
 
+const permissionsMessage =
+    '''In order to automatically save location when app is not in use,you need to select "Allow all the time" in location permission.''';
+
 class PermissionsDialog extends StatelessWidget {
-  final String title, body;
+  final String title;
   const PermissionsDialog({
     Key? key,
-    required this.body,
     required this.title,
   }) : super(key: key);
 
@@ -26,65 +27,31 @@ class PermissionsDialog extends StatelessWidget {
       ),
       elevation: 0,
       backgroundColor: Colors.transparent,
-      child: Stack(
-        children: <Widget>[
-          DialogContainer(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                _Title(text: title),
-                const SizedBox(
-                  height: 15,
-                ),
-                _Subtitle(body: body),
-                const SizedBox(
-                  height: 22,
-                ),
-                Row(
-                  children: const [
-                    Flexible(
-                      flex: 2,
-                      child: _OpenPermissionsBtn(),
-                    ),
-                    Flexible(
-                      child: ExitBtn(),
-                    ),
-                  ],
-                )
-              ],
+      child: DialogContainer(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            _Title(text: title),
+            const SizedBox(
+              height: 15,
             ),
-          ),
-          const _WarningIcon(),
-        ],
-      ),
-    );
-  }
-}
-
-class _WarningIcon extends StatelessWidget {
-  const _WarningIcon({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Positioned(
-      left: Constants.padding,
-      right: Constants.padding,
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          const Icon(
-            Icons.warning_amber_rounded,
-            size: Constants.iconSize,
-            color: Colors.white,
-          ),
-          Icon(
-            Icons.warning_rounded,
-            size: Constants.iconSize,
-            color: Colors.yellow[500],
-          ),
-        ],
+            const _Subtitle(),
+            const SizedBox(
+              height: 22,
+            ),
+            Row(
+              children: const [
+                Flexible(
+                  flex: 2,
+                  child: _OpenPermissionsBtn(),
+                ),
+                Flexible(
+                  child: ExitBtn(),
+                ),
+              ],
+            )
+          ],
+        ),
       ),
     );
   }
@@ -169,17 +136,14 @@ class _OpenPermissionsBtn extends StatelessWidget {
 class _Subtitle extends StatelessWidget {
   const _Subtitle({
     Key? key,
-    required this.body,
   }) : super(key: key);
-
-  final String body;
 
   @override
   Widget build(BuildContext context) {
-    return Text(
-      body,
-      style: const TextStyle(
-        fontSize: 14,
+    return const Text(
+      permissionsMessage,
+      style: TextStyle(
+        fontSize: 16,
       ),
       textAlign: TextAlign.center,
     );
@@ -201,7 +165,7 @@ class DialogContainer extends StatelessWidget {
       ),
       padding: const EdgeInsets.only(
         left: Constants.padding,
-        top: Constants.avatarRadius + Constants.padding,
+        top: Constants.padding,
         right: Constants.padding,
         bottom: Constants.padding,
       ),
@@ -212,10 +176,6 @@ class DialogContainer extends StatelessWidget {
         shape: BoxShape.rectangle,
         color: Colors.white,
         borderRadius: BorderRadius.circular(Constants.padding),
-        border: Border.all(
-          color: Colors.yellow[500]!,
-          width: 8,
-        ),
         boxShadow: const [
           BoxShadow(
             color: Colors.black,

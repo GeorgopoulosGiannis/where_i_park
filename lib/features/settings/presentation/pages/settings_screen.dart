@@ -10,7 +10,7 @@ class SettingsScreen extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(),
         body: ListView(
-          children: [
+          children: const [
             SettingsSwitchItem(),
           ],
         ),

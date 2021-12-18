@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:where_i_park/core/domain/entities/car_location.dart';
+import 'package:where_i_park/features/find_car/presentation/bloc/find_car_bloc.dart';
 
 import 'delete_location_menu_item.dart';
 import 'share_location_menu_item.dart';
@@ -28,8 +30,12 @@ class CardActionsButton extends StatelessWidget {
             },
             child: const ShareLocationMenuItem(),
           ),
-          const PopupMenuItem(
-            child: DeleteLocationMenuItem(),
+          PopupMenuItem(
+            onTap: () {
+              final bloc = context.read<FindCarBloc>();
+              bloc.add(DeleteLocationEvent(bloc.state.location!));
+            },
+            child: const DeleteLocationMenuItem(),
           ),
         ];
       },

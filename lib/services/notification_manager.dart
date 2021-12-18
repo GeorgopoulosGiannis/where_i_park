@@ -11,7 +11,7 @@ class NotificationManager {
 
   static Future<void> initialize() async {
     const AndroidInitializationSettings initializationSettingsAndroid =
-        AndroidInitializationSettings('ic_launcher');
+        AndroidInitializationSettings('ic_launcher_round.png');
 
     const initializationSettings = InitializationSettings(
       android: initializationSettingsAndroid,

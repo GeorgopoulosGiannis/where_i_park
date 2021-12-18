@@ -62,6 +62,28 @@ class LocationManager {
     }
   }
 
+  Future<bool> deleteLocation(CarLocation location) async {
+    try {
+      final saved = await mgr.getListByKey(Constants.carLocations);
+      final decoded = saved.map((e) => CarLocationModel.fromJson(e));
+      final result = <CarLocationModel>[];
+      for (var d in decoded) {
+        if (d.position != location.position) {
+          result.add(d);
+        }
+      }
+      final encoded = result.map((e) => e.toJson()).toList();
+      if (encoded.isNotEmpty) {
+        await mgr.saveValue(_Constants.lastLocation, encoded.last);
+      } else {
+        await mgr.deleteValue(_Constants.lastLocation);
+      }
+      return await mgr.setListByKey(Constants.carLocations, encoded);
+    } catch (e) {
+      return false;
+    }
+  }
+
   Future<bool> hasPermissionForAutomatic() async {
     final perm =
         await Permission.locationAlways.status == PermissionStatus.granted;

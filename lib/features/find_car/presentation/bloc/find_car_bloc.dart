@@ -8,6 +8,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import 'package:injectable/injectable.dart';
 import 'package:where_i_park/core/domain/entities/car_location.dart';
+import 'package:where_i_park/core/domain/usecases/delete_location.dart';
 import 'package:where_i_park/core/domain/usecases/get_current_position.dart';
 import 'package:where_i_park/core/domain/usecases/get_last_location.dart';
 import 'package:where_i_park/features/find_car/domain/usecases/get_location_updates.dart';
@@ -20,6 +21,7 @@ class FindCarBloc extends Bloc<FindCarEvent, FindCarState> {
   final GetCurrentPosition getCurrentLocation;
   final GetLastLocation getLastLocation;
   final GetLocationUpdates getLocationUpdates;
+  final DeleteLocations deleteLocations;
 
   StreamSubscription<Position>? subscription;
 
@@ -27,6 +29,7 @@ class FindCarBloc extends Bloc<FindCarEvent, FindCarState> {
     this.getCurrentLocation,
     this.getLastLocation,
     this.getLocationUpdates,
+    this.deleteLocations,
   ) : super(
           const FindCarState(
             status: FindCarStatus.loading,
@@ -49,6 +52,7 @@ class FindCarBloc extends Bloc<FindCarEvent, FindCarState> {
     on<LoadLastEvent>(_onLoadLastEvent);
     on<PositionChangedEvent>(_onPositionChangedEvent);
     on<LoadForLocationEvt>(_onLoadForLocationEvt);
+    on<DeleteLocationEvent>(_onDeleteLocationEvt);
   }
 
   FutureOr<void> _onLoadLastEvent(
@@ -59,7 +63,7 @@ class FindCarBloc extends Bloc<FindCarEvent, FindCarState> {
     final currentPosition = await getCurrentLocation();
     if (location == null) {
       emit(
-        state.copyWith(
+        FindCarState(
           status: FindCarStatus.noLocation,
           currentPosition: currentPosition,
         ),
@@ -142,7 +146,7 @@ class FindCarBloc extends Bloc<FindCarEvent, FindCarState> {
     final location = event.location;
 
     final Position? currentPosition;
-    
+
     if (state.currentPosition == null) {
       currentPosition = await getCurrentLocation();
     } else {
@@ -167,5 +171,13 @@ class FindCarBloc extends Bloc<FindCarEvent, FindCarState> {
         distance: distance,
       ),
     );
+  }
+
+  FutureOr<void> _onDeleteLocationEvt(
+    DeleteLocationEvent event,
+    Emitter<FindCarState> emit,
+  ) async {
+    await deleteLocations([event.location]);
+    add(const LoadLastEvent());
   }
 }

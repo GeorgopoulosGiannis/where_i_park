@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:where_i_park/features/chronology/presentation/pages/chronology_screen.dart';
-import 'package:where_i_park/features/settings/presentation/pages/settings_screen.dart';
+import 'package:where_i_park/features/history/presentation/pages/history_screen.dart';
 
 import 'drawer_header.dart';
 import 'drawer_list_tile.dart';
@@ -26,13 +25,13 @@ class HomeDrawer extends StatelessWidget {
             height: 1,
           ),
           DrawerListTile(
-            text: 'Chronology',
+            text: 'History',
             iconData: Icons.history,
             onTap: () {
               Navigator.of(context).push(
                 CupertinoPageRoute(
                   builder: (context) {
-                    return const ChronologyScreen();
+                    return const HistoryScreen();
                   },
                 ),
               );
@@ -41,22 +40,7 @@ class HomeDrawer extends StatelessWidget {
           const Divider(
             height: 1,
           ),
-          DrawerListTile(
-            text: 'Settings',
-            iconData: Icons.settings,
-            onTap: () {
-              Navigator.of(context).push(
-                CupertinoPageRoute(
-                  builder: (context) {
-                    return const SettingsScreen();
-                  },
-                ),
-              );
-            },
-          ),
-          const Divider(
-            height: 1,
-          ),
+
           AboutListTile(
             applicationLegalese:
                 'All rights reserved.\n\u{a9}  2021 Ioannis Georgopoulos',

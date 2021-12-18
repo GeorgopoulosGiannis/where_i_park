@@ -21,3 +21,9 @@ class PositionChangedEvent extends FindCarEvent {
 
   const PositionChangedEvent(this.position);
 }
+
+class DeleteLocationEvent extends FindCarEvent {
+  final CarLocation location;
+
+  const DeleteLocationEvent(this.location);
+}

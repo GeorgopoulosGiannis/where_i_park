@@ -125,4 +125,8 @@ class StorageManager {
   Future<bool> saveValue(String key, Map<String, dynamic> value) {
     return _prefs.setString(key, json.encode(value));
   }
+  Future<bool> deleteValue(String key) {
+    return _prefs.remove(key);
+    
+  }
 }
