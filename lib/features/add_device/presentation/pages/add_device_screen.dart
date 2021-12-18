@@ -12,7 +12,6 @@ import '../widgets/devices_list.dart';
 
 import '../bloc/add_device_bloc.dart';
 
-
 class AddDeviceScreen extends StatelessWidget {
   const AddDeviceScreen({Key? key}) : super(key: key);
 
@@ -56,7 +55,6 @@ class AddDeviceScreen extends StatelessWidget {
                             return BlocProvider<AddDeviceBloc>.value(
                               value: bloc,
                               child: const PermissionsDialog(
-                                
                                 title:
                                     'Background location permissions required',
                               ),
@@ -69,58 +67,61 @@ class AddDeviceScreen extends StatelessWidget {
                       }
                     },
                     builder: (context, state) {
-                      return ColoredBox(
-                        color: theme.colorScheme.surface,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const ListTitle(
-                              text: 'All devices',
-                            ),
-                            Flexible(
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: state.devicesNotTracked.isNotEmpty
-                                    ? DevicesList(
-                                        devices: state.devicesNotTracked,
-                                        onTap: (BluetoothDevice dev) =>
-                                            context.read<AddDeviceBloc>().add(
-                                                  TrackDeviceEvent(
-                                                    dev,
+                      return SizedBox(
+                        width: double.infinity,
+                        child: ColoredBox(
+                          color: theme.colorScheme.surface,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const ListTitle(
+                                text: 'All devices',
+                              ),
+                              Flexible(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: state.devicesNotTracked.isNotEmpty
+                                      ? DevicesList(
+                                          devices: state.devicesNotTracked,
+                                          onTap: (BluetoothDevice dev) =>
+                                              context.read<AddDeviceBloc>().add(
+                                                    TrackDeviceEvent(
+                                                      dev,
+                                                    ),
                                                   ),
-                                                ),
-                                      )
-                                    : const Padding(
-                                        padding: EdgeInsets.only(left: 8.0),
-                                        child: Text(
-                                          'No devices, make sure bluetooth is open',
+                                        )
+                                      : const Padding(
+                                          padding: EdgeInsets.only(left: 8.0),
+                                          child: Text(
+                                            'No devices, make sure bluetooth is open',
+                                          ),
                                         ),
-                                      ),
+                                ),
                               ),
-                            ),
-                            const ListTitle(
-                              text: 'Tracking devices',
-                            ),
-                            Flexible(
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: state.alreadyAddedDevices.isNotEmpty
-                                    ? DevicesList(
-                                        devices: state.alreadyAddedDevices,
-                                        onTap: (BluetoothDevice dev) =>
-                                            context.read<AddDeviceBloc>().add(
-                                                  RemoveTrackDeviceEvent(dev),
-                                                ),
-                                      )
-                                    : const Padding(
-                                        padding: EdgeInsets.only(left: 8.0),
-                                        child: Text(
-                                          'No devices added yet',
+                              const ListTitle(
+                                text: 'Tracking devices',
+                              ),
+                              Flexible(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: state.alreadyAddedDevices.isNotEmpty
+                                      ? DevicesList(
+                                          devices: state.alreadyAddedDevices,
+                                          onTap: (BluetoothDevice dev) =>
+                                              context.read<AddDeviceBloc>().add(
+                                                    RemoveTrackDeviceEvent(dev),
+                                                  ),
+                                        )
+                                      : const Padding(
+                                          padding: EdgeInsets.only(left: 8.0),
+                                          child: Text(
+                                            'No devices added yet',
+                                          ),
                                         ),
-                                      ),
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       );
                     },
